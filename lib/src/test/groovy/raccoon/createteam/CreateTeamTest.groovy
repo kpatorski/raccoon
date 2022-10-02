@@ -5,13 +5,13 @@ import raccoon.shared.UserId
 import raccoon.shared.event.EventsPublisher
 import spock.lang.Specification
 
-import static TeamFacade.TeamCreated
-import static TeamFacade.TeamNameAlreadyTaken
+import static CreateTeam.TeamCreated
+import static CreateTeam.TeamNameAlreadyTaken
 
-class TeamFacadeTest extends Specification {
+class CreateTeamTest extends Specification {
     def eventsPublisher = Mock(EventsPublisher)
     def repository = new InMemoryTeamRepository()
-    def teamFacade = new TeamFacade(repository, eventsPublisher)
+    def createTeam = new CreateTeam(repository, eventsPublisher)
 
     def "should create a team"() {
         given:
@@ -19,7 +19,7 @@ class TeamFacadeTest extends Specification {
         def command = new CreateTeamCommand(userId, "any name")
 
         when:
-        def result = teamFacade.createTeam(command)
+        def result = createTeam.createTeam(command)
 
         then: "team is created"
         def event = result.success().get()
@@ -37,10 +37,10 @@ class TeamFacadeTest extends Specification {
     def "should not create a team with the same name already exist"() {
         given: "a team created once"
         def command = new CreateTeamCommand("6a142d89-7b67-4853-b9b1-691434a254d4", "anyName")
-        teamFacade.createTeam(command)
+        createTeam.createTeam(command)
 
         when: "create another team with the same name"
-        def result = teamFacade.createTeam(command)
+        def result = createTeam.createTeam(command)
 
         then:
         result.failure().get() == new TeamNameAlreadyTaken("anyName")

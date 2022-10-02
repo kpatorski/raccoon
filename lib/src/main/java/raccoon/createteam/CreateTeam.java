@@ -13,11 +13,11 @@ import static com.sparrow.control.Result.failure;
 import static com.sparrow.control.Result.success;
 import static java.lang.String.format;
 
-public class TeamFacade {
+public class CreateTeam {
     private final TeamRepository teamRepository;
     private final EventsPublisher eventsPublisher;
 
-    TeamFacade(TeamRepository teamRepository,
+    CreateTeam(TeamRepository teamRepository,
                EventsPublisher eventsPublisher) {
         this.teamRepository = teamRepository;
         this.eventsPublisher = eventsPublisher;
