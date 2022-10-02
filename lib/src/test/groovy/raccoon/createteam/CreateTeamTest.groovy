@@ -22,7 +22,7 @@ class CreateTeamTest extends Specification {
         def result = createTeam.createTeam(command)
 
         then: "team is created"
-        def event = result.success().get()
+        def event = result.success()
         event.byWho() == new UserId(userId)
 
         and: "event is published"
@@ -43,7 +43,7 @@ class CreateTeamTest extends Specification {
         def result = createTeam.createTeam(command)
 
         then:
-        result.failure().get() == new TeamNameAlreadyTaken("anyName")
+        result.failure() == new TeamNameAlreadyTaken("anyName")
     }
 
     private static class InMemoryTeamRepository implements TeamRepository {
