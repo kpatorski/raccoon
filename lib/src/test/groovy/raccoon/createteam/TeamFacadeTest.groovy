@@ -1,12 +1,12 @@
-package raccoon.team.create
+package raccoon.createteam
 
 import raccoon.shared.TeamId
 import raccoon.shared.UserId
 import raccoon.shared.event.EventsPublisher
 import spock.lang.Specification
 
-import static raccoon.team.create.TeamFacade.TeamCreated
-import static raccoon.team.create.TeamFacade.TeamNameAlreadyTaken
+import static TeamFacade.TeamCreated
+import static TeamFacade.TeamNameAlreadyTaken
 
 class TeamFacadeTest extends Specification {
     def eventsPublisher = Mock(EventsPublisher)

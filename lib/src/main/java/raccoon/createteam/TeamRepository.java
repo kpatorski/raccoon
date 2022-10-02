@@ -1,4 +1,4 @@
-package raccoon.team.create;
+package raccoon.createteam;
 
 interface TeamRepository {
     boolean existByName(String name);

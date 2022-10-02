@@ -1,4 +1,4 @@
-package raccoon.team.create;
+package raccoon.createteam;
 
 import com.sparrow.control.Result;
 import raccoon.shared.TeamId;

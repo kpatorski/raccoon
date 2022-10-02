@@ -1,4 +1,4 @@
-package raccoon.team.create;
+package raccoon.createteam;
 
 import raccoon.shared.UserId;
 
