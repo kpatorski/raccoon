@@ -1,16 +1,17 @@
 package raccoon.team.create;
 
+import com.sparrow.control.Result;
 import raccoon.shared.TeamId;
 import raccoon.shared.UserId;
 import raccoon.shared.event.Event;
 import raccoon.shared.event.EventsPublisher;
 import raccoon.shared.result.Failure;
-import raccoon.shared.result.Result;
 
 import java.time.Instant;
 
+import static com.sparrow.control.Result.failure;
+import static com.sparrow.control.Result.success;
 import static java.lang.String.format;
-import static raccoon.shared.result.Result.*;
 
 public class TeamFacade {
     private final TeamRepository teamRepository;
