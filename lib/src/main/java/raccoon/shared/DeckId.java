@@ -4,9 +4,9 @@ import java.util.UUID;
 
 import static java.util.UUID.randomUUID;
 
-public record TeamId(UUID value) {
-    public static TeamId newId() {
-        return new TeamId(randomUUID());
+public record DeckId(UUID value) {
+    public static DeckId newId() {
+        return new DeckId(randomUUID());
     }
 
     @Override

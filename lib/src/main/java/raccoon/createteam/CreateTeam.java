@@ -48,7 +48,7 @@ public class CreateTeam {
 
     record TeamCreated(TeamId teamId, UserId byWho, Instant when) implements Event {
         private TeamCreated(TeamId teamUuid, UserId byWho) {
-            this(new TeamId(teamUuid.uuid()), byWho, Instant.now());
+            this(new TeamId(teamUuid.value()), byWho, Instant.now());
         }
 
         @Override

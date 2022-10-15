@@ -29,7 +29,7 @@ class CreateTeamTest extends Specification {
         1 * eventsPublisher.publish(_ as TeamCreated)
 
         and: "team is persisted"
-        with(repository.byUuid(event.teamId().uuid())) {
+        with(repository.byUuid(event.teamId().value())) {
             it.name() == "any name"
         }
     }
