@@ -8,7 +8,7 @@ record Signal(double value) {
     return new Signal(value);
   }
 
-  static Signal merge(Collection<Signal> signals) {
+  static Signal sum(Collection<Signal> signals) {
     return new Signal(signals.stream()
         .mapToDouble(Signal::value)
         .sum());
