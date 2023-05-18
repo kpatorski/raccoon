@@ -1,4 +1,4 @@
-package raccoon.neural
+package raccoon.neuralnetwork
 
 class ActivationFunctionFixtures {
     static ActivationFunction linearFunction() {
