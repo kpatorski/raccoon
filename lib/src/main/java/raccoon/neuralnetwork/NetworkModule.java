@@ -12,9 +12,8 @@ interface NetworkModule {
 class HiddenLayers {
     private final List<Layer<HiddenNeuron>> layers = new ArrayList<>();
 
-    HiddenLayers add(Layer<HiddenNeuron> layer) {
+    void add(Layer<HiddenNeuron> layer) {
         layers.add(layer);
-        return this;
     }
 
     boolean isEmpty() {
@@ -33,23 +32,20 @@ class HiddenLayers {
         return layers.iterator();
     }
 
-    HiddenLayers forEachNeuron(Consumer<HiddenNeuron> consumer) {
+    void forEachNeuron(Consumer<HiddenNeuron> consumer) {
         layers.forEach(layer -> layer.neurons().forEach(consumer));
-        return this;
     }
 }
 
 class Layer<T> {
     private final Collection<T> neurons = new ArrayList<>();
 
-    Layer<T> add(T neuron) {
+    void add(T neuron) {
         neurons.add(neuron);
-        return this;
     }
 
-    Layer<T> forEach(Consumer<T> consumer) {
+    void forEach(Consumer<T> consumer) {
         neurons.forEach(consumer);
-        return this;
     }
 
     Collection<T> neurons() {
