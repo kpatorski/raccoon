@@ -3,10 +3,6 @@ package raccoon.neuralnetwork;
 import java.util.HashSet;
 import java.util.Set;
 
-interface NeuronModule {
-
-}
-
 class InputNeuron implements Transmitter {
     private final Set<Link> outgoingLinks = new HashSet<>();
 
@@ -72,6 +68,20 @@ class OutputNeuron implements Receiver {
     @Override
     public void addInput(Link link) {
         incomingLinks.add(link);
+    }
+}
+
+class Bias implements Transmitter {
+    private static final Signal SIGNAL = new Signal(1);
+    private Link outgoingLink;
+
+    @Override
+    public void addOutput(Link link) {
+        this.outgoingLink = link;
+    }
+
+    void transmit() {
+        outgoingLink.transmit(SIGNAL);
     }
 }
 

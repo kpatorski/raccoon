@@ -6,9 +6,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.Consumer;
 
-interface NetworkModule {
-}
-
 class HiddenLayers {
     private final List<Layer<HiddenNeuron>> layers = new ArrayList<>();
 
