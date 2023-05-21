@@ -5,7 +5,7 @@ import spock.lang.Specification
 import static raccoon.neuralnetwork.ActivationFunctionFixtures.linearFunction
 import static raccoon.neuralnetwork.Link.Weight
 
-class SingleNeuronNetworkTest extends Specification {
+class ForwardPropagationTest extends Specification {
 
     def "input neurons transmit signals to output neuron"() {
         given:
