@@ -33,11 +33,13 @@ class ConnectLayers {
     }
 
     private <R extends Receiver> void connectToEachReceiver(Emitter emitter, Stream<R> receivers) {
-        receivers.forEach(receiver -> {
-            Link link = Link.between(emitter, receiver, weightGenerator.next());
-            emitter.linkWithReceiver(link);
-            receiver.linkWithEmitter(link);
-        });
+        receivers.forEach(receiver -> createLinkBetween(emitter, receiver));
+    }
+
+    private void createLinkBetween(Emitter emitter, Receiver receiver) {
+        Link link = Link.ofWeight(weightGenerator.next());
+        emitter.linkWithReceiver(link);
+        receiver.linkWithEmitter(link);
     }
 
     private void connectInputWithNeuronLayers(InputLayer inputLayer, NeuronsLayers neuronsLayers) {

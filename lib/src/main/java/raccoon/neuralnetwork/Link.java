@@ -9,11 +9,8 @@ class Link {
         this.weight = weight;
     }
 
-    static Link between(Emitter emitter, Receiver receiver, Weight weight) {
-        Link link = new Link(weight);
-        emitter.linkWithReceiver(link);
-        receiver.linkWithEmitter(link);
-        return link;
+    public static Link ofWeight(Weight weight) {
+        return new Link(weight);
     }
 
     void transmit(Signal signal) {
