@@ -11,20 +11,20 @@ class ConnectLayers {
         this.weightGenerator = weightGenerator;
     }
 
-    void eachNeurons(Layer<Input> inputLayer,
-                     HiddenLayers hiddenLayers,
-                     Layer<Output> outputLayer) {
-        if (hiddenLayers.isEmpty()) {
+    void eachNeurons(InputLayer inputLayer,
+                     NeuronsLayers neuronsLayers,
+                     OutputLayer outputLayer) {
+        if (neuronsLayers.isEmpty()) {
             connectInputWithOutput(inputLayer, outputLayer);
         } else {
-            connectInputWithHiddenLayers(inputLayer, hiddenLayers);
-            connectHiddenLayers(hiddenLayers.iterator());
-            connectHiddenLayersWithOutput(hiddenLayers, outputLayer);
+            connectInputWithNeuronLayers(inputLayer, neuronsLayers);
+            connectNeuronLayers(neuronsLayers.iterator());
+            connectNeuronsLayersWithOutput(neuronsLayers, outputLayer);
         }
     }
 
-    private void connectInputWithOutput(Layer<Input> inputLayer, Layer<Output> outputLayer) {
-        eachNeurons(inputLayer.neurons(), outputLayer.neurons());
+    private void connectInputWithOutput(InputLayer inputLayer, OutputLayer outputLayer) {
+        eachNeurons(inputLayer.inputs(), outputLayer.outputs());
     }
 
     private <E extends Emitter, R extends Receiver> void eachNeurons(Collection<E> emitters,
@@ -40,20 +40,20 @@ class ConnectLayers {
         });
     }
 
-    private void connectInputWithHiddenLayers(Layer<Input> inputLayer, HiddenLayers hiddenLayers) {
-        eachNeurons(inputLayer.neurons(), hiddenLayers.first().neurons());
+    private void connectInputWithNeuronLayers(InputLayer inputLayer, NeuronsLayers neuronsLayers) {
+        eachNeurons(inputLayer.inputs(), neuronsLayers.first().neurons());
     }
 
-    private void connectHiddenLayers(Iterator<Layer<Neuron>> layers) {
+    private void connectNeuronLayers(Iterator<NeuronLayer> layers) {
         while (layers.hasNext()) {
-            Layer<Neuron> left = layers.next();
+            NeuronLayer left = layers.next();
             if (layers.hasNext()) {
                 eachNeurons(left.neurons(), layers.next().neurons());
             }
         }
     }
 
-    private void connectHiddenLayersWithOutput(HiddenLayers hiddenLayers, Layer<Output> outputLayer) {
-        eachNeurons(hiddenLayers.last().neurons(), outputLayer.neurons());
+    private void connectNeuronsLayersWithOutput(NeuronsLayers neuronsLayers, OutputLayer outputLayer) {
+        eachNeurons(neuronsLayers.last().neurons(), outputLayer.outputs());
     }
 }

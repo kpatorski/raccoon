@@ -4,13 +4,13 @@ import java.util.Collection;
 import java.util.Iterator;
 
 public class NeuralNetwork {
-    private final Layer<Input> inputLayer;
-    private final HiddenLayers hiddenLayers;
-    private final Layer<Output> outputLayer;
+    private final InputLayer inputLayer;
+    private final NeuronsLayers neuronsLayers;
+    private final OutputLayer outputLayer;
 
-    NeuralNetwork(Layer<Input> inputLayer, HiddenLayers hiddenLayers, Layer<Output> outputLayer) {
+    NeuralNetwork(InputLayer inputLayer, NeuronsLayers neuronsLayers, OutputLayer outputLayer) {
         this.inputLayer = inputLayer;
-        this.hiddenLayers = hiddenLayers;
+        this.neuronsLayers = neuronsLayers;
         this.outputLayer = outputLayer;
     }
 
@@ -20,12 +20,12 @@ public class NeuralNetwork {
 
     private NeuralNetwork inputs(Iterator<Signal> signals) {
         inputLayer.forEach(neuron -> neuron.emit(signals.next()));
-        hiddenLayers.forEachNeuron(Neuron::emit);
+        neuronsLayers.forEachNeuron(Neuron::emit);
         return this;
     }
 
     public Collection<Signal> outputs() {
-        return outputLayer.neurons().stream()
+        return outputLayer.outputs().stream()
                 .map(Output::signal)
                 .toList();
     }

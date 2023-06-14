@@ -6,10 +6,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.Consumer;
 
-class HiddenLayers {
-    private final List<Layer<Neuron>> layers = new ArrayList<>();
+class NeuronsLayers {
+    private final List<NeuronLayer> layers = new ArrayList<>();
 
-    void add(Layer<Neuron> layer) {
+    void add(NeuronLayer layer) {
         layers.add(layer);
     }
 
@@ -17,15 +17,15 @@ class HiddenLayers {
         return layers.isEmpty();
     }
 
-    Layer<Neuron> first() {
+    NeuronLayer first() {
         return layers.get(0);
     }
 
-    Layer<Neuron> last() {
+    NeuronLayer last() {
         return layers.get(layers.size() - 1);
     }
 
-    Iterator<Layer<Neuron>> iterator() {
+    Iterator<NeuronLayer> iterator() {
         return layers.iterator();
     }
 
@@ -34,18 +34,43 @@ class HiddenLayers {
     }
 }
 
-class Layer<T> {
-    private final Collection<T> neurons = new ArrayList<>();
+class InputLayer {
+    private final Collection<Input> inputs = new ArrayList<>();
 
-    void add(T neuron) {
+    void add(Input input) {
+        inputs.add(input);
+    }
+
+    void forEach(Consumer<Input> consumer) {
+        inputs.forEach(consumer);
+    }
+
+    Collection<Input> inputs() {
+        return inputs;
+    }
+}
+
+class NeuronLayer {
+    private final Collection<Neuron> neurons = new ArrayList<>();
+
+    void add(Neuron neuron) {
         neurons.add(neuron);
     }
 
-    void forEach(Consumer<T> consumer) {
-        neurons.forEach(consumer);
-    }
-
-    Collection<T> neurons() {
+    Collection<Neuron> neurons() {
         return neurons;
     }
 }
+
+class OutputLayer {
+    private final Collection<Output> outputs = new ArrayList<>();
+
+    void add(Output output) {
+        outputs.add(output);
+    }
+
+    Collection<Output> outputs() {
+        return outputs;
+    }
+}
+

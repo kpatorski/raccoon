@@ -19,9 +19,9 @@ public class BuildNetwork {
     }
 
     public static class Builder implements SetupFirstLayer, SetupNextLayer, SetupLastLayer {
-        private final Layer<Input> inputLayer = new Layer<>();
-        private final HiddenLayers hiddenLayers = new HiddenLayers();
-        private final Layer<Output> outputLayer = new Layer<>();
+        private final InputLayer inputLayer = new InputLayer();
+        private final NeuronsLayers neuronsLayers = new NeuronsLayers();
+        private final OutputLayer outputLayer = new OutputLayer();
         private final ConnectLayers connectLayers;
 
         private Builder(WeightsGenerator weightsGenerator) {
@@ -38,11 +38,11 @@ public class BuildNetwork {
 
         @Override
         public SetupNextLayer hiddenLayer(long numberOfNeurons, ActivationFunction activationFunction) {
-            Layer<Neuron> layer = new Layer<>();
+            NeuronLayer layer = new NeuronLayer();
             Stream.generate(() -> new Neuron(activationFunction))
                     .limit(numberOfNeurons)
                     .forEach(layer::add);
-            hiddenLayers.add(layer);
+            neuronsLayers.add(layer);
             return this;
         }
 
@@ -51,8 +51,8 @@ public class BuildNetwork {
             Stream.generate(() -> new Output(activationFunction))
                     .limit(numberOfNeurons)
                     .forEach(outputLayer::add);
-            connectLayers.eachNeurons(inputLayer, hiddenLayers, outputLayer);
-            return new NeuralNetwork(inputLayer, hiddenLayers, outputLayer);
+            connectLayers.eachNeurons(inputLayer, neuronsLayers, outputLayer);
+            return new NeuralNetwork(inputLayer, neuronsLayers, outputLayer);
         }
     }
 
