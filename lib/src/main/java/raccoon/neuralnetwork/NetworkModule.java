@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.function.Consumer;
 
 class HiddenLayers {
-    private final List<Layer<HiddenNeuron>> layers = new ArrayList<>();
+    private final List<Layer<Neuron>> layers = new ArrayList<>();
 
-    void add(Layer<HiddenNeuron> layer) {
+    void add(Layer<Neuron> layer) {
         layers.add(layer);
     }
 
@@ -17,19 +17,19 @@ class HiddenLayers {
         return layers.isEmpty();
     }
 
-    Layer<HiddenNeuron> first() {
+    Layer<Neuron> first() {
         return layers.get(0);
     }
 
-    Layer<HiddenNeuron> last() {
+    Layer<Neuron> last() {
         return layers.get(layers.size() - 1);
     }
 
-    Iterator<Layer<HiddenNeuron>> iterator() {
+    Iterator<Layer<Neuron>> iterator() {
         return layers.iterator();
     }
 
-    void forEachNeuron(Consumer<HiddenNeuron> consumer) {
+    void forEachNeuron(Consumer<Neuron> consumer) {
         layers.forEach(layer -> layer.neurons().forEach(consumer));
     }
 }

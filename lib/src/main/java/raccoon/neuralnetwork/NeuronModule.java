@@ -3,29 +3,29 @@ package raccoon.neuralnetwork;
 import java.util.HashSet;
 import java.util.Set;
 
-class InputNeuron implements Transmitter {
+class Input implements Emitter {
     private final Set<Link> outgoingLinks = new HashSet<>();
 
-    void transmit(Signal signal) {
+    void emit(Signal signal) {
         outgoingLinks.forEach(link -> link.transmit(signal));
     }
 
     @Override
-    public void addOutput(Link link) {
-        outgoingLinks.add(link);
+    public void linkWithReceiver(Link receiver) {
+        outgoingLinks.add(receiver);
     }
 }
 
-class HiddenNeuron implements Transmitter, Receiver {
+class Neuron implements Emitter, Receiver {
     private final Set<Link> outgoingLinks = new HashSet<>();
     private final Set<Link> incomingLinks = new HashSet<>();
     private final ActivationFunction activationFunction;
 
-    HiddenNeuron(ActivationFunction activationFunction) {
+    Neuron(ActivationFunction activationFunction) {
         this.activationFunction = activationFunction;
     }
 
-    void transmit() {
+    void emit() {
         Signal signal = activationFunction.onSignal(totalIncomingSignal());
         outgoingLinks.forEach(link -> link.transmit(signal));
     }
@@ -37,21 +37,21 @@ class HiddenNeuron implements Transmitter, Receiver {
     }
 
     @Override
-    public void addOutput(Link link) {
-        outgoingLinks.add(link);
+    public void linkWithReceiver(Link receiver) {
+        outgoingLinks.add(receiver);
     }
 
     @Override
-    public void addInput(Link link) {
-        incomingLinks.add(link);
+    public void linkWithEmitter(Link emitter) {
+        incomingLinks.add(emitter);
     }
 }
 
-class OutputNeuron implements Receiver {
+class Output implements Receiver {
     private final Set<Link> incomingLinks = new HashSet<>();
     private final ActivationFunction activationFunction;
 
-    OutputNeuron(ActivationFunction activationFunction) {
+    Output(ActivationFunction activationFunction) {
         this.activationFunction = activationFunction;
     }
 
@@ -66,30 +66,30 @@ class OutputNeuron implements Receiver {
     }
 
     @Override
-    public void addInput(Link link) {
-        incomingLinks.add(link);
+    public void linkWithEmitter(Link emitter) {
+        incomingLinks.add(emitter);
     }
 }
 
-class Bias implements Transmitter {
+class Bias implements Emitter {
     private static final Signal SIGNAL = new Signal(1);
-    private Link outgoingLink;
+    private Link linkToReceiver;
 
     @Override
-    public void addOutput(Link link) {
-        this.outgoingLink = link;
+    public void linkWithReceiver(Link receiver) {
+        this.linkToReceiver = receiver;
     }
 
-    void transmit() {
-        outgoingLink.transmit(SIGNAL);
+    void emit() {
+        linkToReceiver.transmit(SIGNAL);
     }
 }
 
 interface Receiver {
-    void addInput(Link link);
+    void linkWithEmitter(Link emitter);
 }
 
-interface Transmitter {
-    void addOutput(Link link);
+interface Emitter {
+    void linkWithReceiver(Link receiver);
 }
 

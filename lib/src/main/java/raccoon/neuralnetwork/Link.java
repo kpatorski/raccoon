@@ -9,10 +9,10 @@ class Link {
         this.weight = weight;
     }
 
-    static Link between(Transmitter transmitter, Receiver receiver, Weight weight) {
+    static Link between(Emitter emitter, Receiver receiver, Weight weight) {
         Link link = new Link(weight);
-        transmitter.addOutput(link);
-        receiver.addInput(link);
+        emitter.linkWithReceiver(link);
+        receiver.linkWithEmitter(link);
         return link;
     }
 

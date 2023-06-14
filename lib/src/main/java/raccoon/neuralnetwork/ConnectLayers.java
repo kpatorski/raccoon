@@ -11,9 +11,9 @@ class ConnectLayers {
         this.weightGenerator = weightGenerator;
     }
 
-    void eachNeurons(Layer<InputNeuron> inputLayer,
+    void eachNeurons(Layer<Input> inputLayer,
                      HiddenLayers hiddenLayers,
-                     Layer<OutputNeuron> outputLayer) {
+                     Layer<Output> outputLayer) {
         if (hiddenLayers.isEmpty()) {
             connectInputWithOutput(inputLayer, outputLayer);
         } else {
@@ -23,37 +23,37 @@ class ConnectLayers {
         }
     }
 
-    private void connectInputWithOutput(Layer<InputNeuron> inputLayer, Layer<OutputNeuron> outputLayer) {
+    private void connectInputWithOutput(Layer<Input> inputLayer, Layer<Output> outputLayer) {
         eachNeurons(inputLayer.neurons(), outputLayer.neurons());
     }
 
-    private <T extends Transmitter, R extends Receiver> void eachNeurons(Collection<T> transmitters,
-                                                                         Collection<R> receivers) {
-        transmitters.forEach(input -> connectToEachReceiver(input, receivers.stream()));
+    private <E extends Emitter, R extends Receiver> void eachNeurons(Collection<E> emitters,
+                                                                     Collection<R> receivers) {
+        emitters.forEach(input -> connectToEachReceiver(input, receivers.stream()));
     }
 
-    private <R extends Receiver> void connectToEachReceiver(Transmitter transmitter, Stream<R> receivers) {
+    private <R extends Receiver> void connectToEachReceiver(Emitter emitter, Stream<R> receivers) {
         receivers.forEach(receiver -> {
-            Link link = Link.between(transmitter, receiver, weightGenerator.next());
-            transmitter.addOutput(link);
-            receiver.addInput(link);
+            Link link = Link.between(emitter, receiver, weightGenerator.next());
+            emitter.linkWithReceiver(link);
+            receiver.linkWithEmitter(link);
         });
     }
 
-    private void connectInputWithHiddenLayers(Layer<InputNeuron> inputLayer, HiddenLayers hiddenLayers) {
+    private void connectInputWithHiddenLayers(Layer<Input> inputLayer, HiddenLayers hiddenLayers) {
         eachNeurons(inputLayer.neurons(), hiddenLayers.first().neurons());
     }
 
-    private void connectHiddenLayers(Iterator<Layer<HiddenNeuron>> layers) {
+    private void connectHiddenLayers(Iterator<Layer<Neuron>> layers) {
         while (layers.hasNext()) {
-            Layer<HiddenNeuron> left = layers.next();
+            Layer<Neuron> left = layers.next();
             if (layers.hasNext()) {
                 eachNeurons(left.neurons(), layers.next().neurons());
             }
         }
     }
 
-    private void connectHiddenLayersWithOutput(HiddenLayers hiddenLayers, Layer<OutputNeuron> outputLayer) {
+    private void connectHiddenLayersWithOutput(HiddenLayers hiddenLayers, Layer<Output> outputLayer) {
         eachNeurons(hiddenLayers.last().neurons(), outputLayer.neurons());
     }
 }
