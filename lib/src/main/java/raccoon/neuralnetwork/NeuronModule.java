@@ -32,7 +32,7 @@ class Neuron implements Emitter, Receiver {
 
     private Signal totalIncomingSignal() {
         return incomingLinks.stream()
-                .map(Link::signal)
+                .map(Link::outgoingSignal)
                 .collect(Signal.sum());
     }
 
@@ -61,7 +61,7 @@ class Output implements Receiver {
 
     private Signal totalIncomingSignal() {
         return incomingLinks.stream()
-                .map(Link::signal)
+                .map(Link::outgoingSignal)
                 .collect(Signal.sum());
     }
 

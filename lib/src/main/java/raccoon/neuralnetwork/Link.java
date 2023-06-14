@@ -1,8 +1,8 @@
 package raccoon.neuralnetwork;
 
 class Link {
-    private Signal inputSignal;
-    private Signal outputSignal;
+    private Signal incommingSignal = new Signal(0);
+    private Signal outgoingSignal = incommingSignal;
     private Weight weight;
 
     private Link(Weight weight) {
@@ -14,16 +14,16 @@ class Link {
     }
 
     void transmit(Signal signal) {
-        inputSignal = signal;
-        outputSignal = multiply(weight, inputSignal);
+        incommingSignal = signal;
+        outgoingSignal = multiply(weight, incommingSignal);
     }
 
     private static Signal multiply(Weight weight, Signal signal) {
         return signal.multiply(weight.value());
     }
 
-    Signal signal() {
-        return outputSignal;
+    Signal outgoingSignal() {
+        return outgoingSignal;
     }
 
     Link setWeight(Weight weight) {
