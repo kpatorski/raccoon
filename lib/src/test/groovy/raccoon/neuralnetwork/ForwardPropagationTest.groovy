@@ -1,9 +1,11 @@
 package raccoon.neuralnetwork
 
+import raccoon.neuralnetwork.usecases.createnetwork.CreateNewNetwork
+import raccoon.neuralnetwork.usecases.createnetwork.WeightsGenerator
 import spock.lang.Specification
 
 import static raccoon.neuralnetwork.ActivationFunctionFixtures.linearFunction
-import static raccoon.neuralnetwork.Link.Weight
+import static raccoon.neuralnetwork.core.Link.Weight
 
 class ForwardPropagationTest extends Specification {
 
@@ -12,12 +14,12 @@ class ForwardPropagationTest extends Specification {
         def weights = fixedWeights([0.5d, 1, 0.5d, 1])
 
         and:
-        NeuralNetwork network = BuildNetwork.ofFixedWeights(weights)
+        NeuralNetwork network = CreateNewNetwork.ofFixedWeights(weights)
                 .inputLayer(2)
                 .outputLayer(2, linearFunction())
 
         expect:
-        network.inputs([signal(input1), signal(input2)]).outputs() == [signal(outputs[0]), signal(outputs[1])]
+        network.emit([signal(input1), signal(input2)]) == [signal(outputs[0]), signal(outputs[1])]
 
         where:
         input1 | input2 || outputs
@@ -31,14 +33,14 @@ class ForwardPropagationTest extends Specification {
         def weights = fixedWeights([0.1d, 0.1d, 0.1d, 0.2d, 0.2d, 0.2d, 0.3d, 0.3d, 0.3d, 0.3d, 0.3d, 0.3d, 0.4d, 0.4d, 0.5d, 0.5d])
 
         and:
-        NeuralNetwork network = BuildNetwork.ofFixedWeights(weights)
+        NeuralNetwork network = CreateNewNetwork.ofFixedWeights(weights)
                 .inputLayer(2)
                 .hiddenLayer(3, linearFunction())
                 .hiddenLayer(2, linearFunction())
                 .outputLayer(2, linearFunction())
 
         expect:
-        network.inputs([signal(input1), signal(input2)]).outputs() == [signal(outputs[0]), signal(outputs[1])]
+        network.emit([signal(input1), signal(input2)]) == [signal(outputs[0]), signal(outputs[1])]
 
         where:
         input1 | input2 || outputs

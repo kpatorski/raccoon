@@ -1,4 +1,6 @@
-package raccoon.neuralnetwork;
+package raccoon.neuralnetwork.usecases.createnetwork;
+
+import raccoon.neuralnetwork.core.*;
 
 import java.util.Collection;
 import java.util.Iterator;

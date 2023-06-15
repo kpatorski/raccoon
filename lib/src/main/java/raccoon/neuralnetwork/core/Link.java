@@ -1,6 +1,8 @@
-package raccoon.neuralnetwork;
+package raccoon.neuralnetwork.core;
 
-class Link {
+import raccoon.neuralnetwork.Signal;
+
+public class Link {
     private Signal incommingSignal = new Signal(0);
     private Signal outgoingSignal = incommingSignal;
     private Weight weight;
@@ -13,7 +15,7 @@ class Link {
         return new Link(weight);
     }
 
-    void transmit(Signal signal) {
+    public void transmit(Signal signal) {
         incommingSignal = signal;
         outgoingSignal = multiply(weight, incommingSignal);
     }
@@ -31,7 +33,7 @@ class Link {
         return this;
     }
 
-    record Weight(double value) {
+    public record Weight(double value) {
         @Override
         public String toString() {
             return String.valueOf(value);

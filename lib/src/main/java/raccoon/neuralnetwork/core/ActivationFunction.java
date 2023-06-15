@@ -1,4 +1,6 @@
-package raccoon.neuralnetwork;
+package raccoon.neuralnetwork.core;
+
+import raccoon.neuralnetwork.Signal;
 
 @FunctionalInterface
 public interface ActivationFunction {

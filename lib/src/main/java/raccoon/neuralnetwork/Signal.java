@@ -9,11 +9,11 @@ import java.util.stream.Collector;
 
 public record Signal(double value) {
 
-    Signal add(Signal another) {
+    public Signal add(Signal another) {
         return new Signal(this.value + another.value);
     }
 
-    Signal multiply(double multiplier) {
+    public Signal multiply(double multiplier) {
         return new Signal(this.value * multiplier);
     }
 
@@ -22,7 +22,7 @@ public record Signal(double value) {
         return String.valueOf(value);
     }
 
-    static Collector<Signal, Signal, Signal> sum() {
+    public static Collector<Signal, Signal, Signal> sum() {
         return new Collector<>() {
             private Signal sum = new Signal(0);
 
