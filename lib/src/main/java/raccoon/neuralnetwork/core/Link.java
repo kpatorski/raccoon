@@ -33,6 +33,10 @@ public class Link {
         return this;
     }
 
+    public Weight weight() {
+        return weight;
+    }
+
     public record Weight(double value) {
         @Override
         public String toString() {
