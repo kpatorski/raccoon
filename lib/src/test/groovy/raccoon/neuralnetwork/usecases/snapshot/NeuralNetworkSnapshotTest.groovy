@@ -6,9 +6,6 @@ import static org.hamcrest.Matchers.containsInAnyOrder
 import static raccoon.neuralnetwork.AssertJson.assertThat
 
 class NeuralNetworkSnapshotTest extends Specification {
-    def takeSnapshot = new TakeSnapshot()
-    def restoreSnapshot = new RestoreSnapshot()
-
     def "neural network is restored from and stored as a snapshot"() {
         given:
         def snapshot = """
@@ -109,10 +106,10 @@ class NeuralNetworkSnapshotTest extends Specification {
         """
 
         and:
-        def network = restoreSnapshot.from(snapshot)
+        def network = RestoreSnapshot.from(snapshot)
 
         expect:
-        assertThat(takeSnapshot.of(network))
+        assertThat(TakeSnapshot.of(network))
                 .on('$.inputLayer.inputs[0].outgoingLinks[*]').satisfies(containsInAnyOrder(1.1d, 1.2d))
                 .on('$.inputLayer.inputs[1].outgoingLinks[*]').satisfies(containsInAnyOrder(2.1d, 2.2d))
 

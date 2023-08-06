@@ -10,7 +10,10 @@ public class TakeSnapshot {
             .registerTypeAdapter(Link.class, new LinkSerializer())
             .create();
 
-    public String of(NeuralNetwork network) {
+    private TakeSnapshot() {
+    }
+
+    public static String of(NeuralNetwork network) {
         return GSON.toJson(network);
     }
 }

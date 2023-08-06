@@ -11,7 +11,10 @@ public class RestoreSnapshot {
             .registerTypeAdapter(Link.class, new LinkSerializer())
             .create();
 
-    public NeuralNetwork from(String snapshot) {
+    private RestoreSnapshot() {
+    }
+
+    public static NeuralNetwork from(String snapshot) {
         return GSON.fromJson(snapshot, Network.class);
     }
 }
