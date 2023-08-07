@@ -1,6 +1,7 @@
 package raccoon.neuralnetwork.core;
 
 import raccoon.neuralnetwork.Signal;
+import raccoon.neuralnetwork.core.activationfunction.ActivationFunction;
 
 import java.util.HashSet;
 import java.util.Set;

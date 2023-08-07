@@ -2,6 +2,7 @@ package raccoon.neuralnetwork.usecases.createnetwork;
 
 import raccoon.neuralnetwork.NeuralNetwork;
 import raccoon.neuralnetwork.core.*;
+import raccoon.neuralnetwork.core.activationfunction.ActivationFunction;
 
 import java.util.random.RandomGenerator;
 import java.util.stream.Stream;

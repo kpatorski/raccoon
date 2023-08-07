@@ -1,8 +1,9 @@
-package raccoon.neuralnetwork.core;
+package raccoon.neuralnetwork.core.activationfunction;
 
 import raccoon.neuralnetwork.Signal;
 
-@FunctionalInterface
 public interface ActivationFunction {
+    FunctionId id();
+
     Signal onSignal(Signal signal);
 }
