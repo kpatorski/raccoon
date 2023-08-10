@@ -3,9 +3,13 @@ package raccoon.neuralnetwork.usecases.snapshot
 import spock.lang.Specification
 
 import static org.hamcrest.Matchers.containsInAnyOrder
+import static org.hamcrest.Matchers.equalTo
 import static raccoon.neuralnetwork.AssertJson.assertThat
 
 class NeuralNetworkSnapshotTest extends Specification {
+    /**
+     * <img src="./network-hidden-layer.png" width=483/>
+     */
     def "neural network is restored from and stored as a snapshot"() {
         given:
         def snapshot = """
@@ -14,14 +18,16 @@ class NeuralNetworkSnapshotTest extends Specification {
                 "inputs": [
                   {
                     "outgoingLinks": [
-                      1.1,
-                      1.2
+                      0.1,
+                      0.2,
+                      0.3
                     ]
                   },
                   {
                     "outgoingLinks": [
-                      2.1,
-                      2.2
+                      0.4,
+                      0.5,
+                      0.6
                     ]
                   }
                 ]
@@ -31,55 +37,36 @@ class NeuralNetworkSnapshotTest extends Specification {
                   {
                     "neurons": [
                       {
+                        "activationFunction": "LINEAR",
                         "outgoingLinks": [
-                          3.1,
-                          3.2
+                          0.1,
+                          0.2
                         ],
                         "incomingLinks": [
-                          4.1,
-                          4.2
+                          0.1,
+                          0.4
                         ]
                       },
                       {
+                        "activationFunction": "LINEAR",
                         "outgoingLinks": [
-                          5.1
+                          0.1,
+                          0.2
                         ],
                         "incomingLinks": [
-                          5.1
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "neurons": [
-                      {
-                        "outgoingLinks": [
-                          6.1,
-                          6.2
-                        ],
-                        "incomingLinks": [
-                          7.1,
-                          7.2
+                          0.2,
+                          0.5
                         ]
                       },
                       {
+                        "activationFunction": "LINEAR",
                         "outgoingLinks": [
-                          8.1,
-                          8.2
+                          0.3,
+                          0.4
                         ],
                         "incomingLinks": [
-                          9.1,
-                          9.2
-                        ]
-                      },
-                      {
-                        "outgoingLinks": [
-                          10.1,
-                          10.2
-                        ],
-                        "incomingLinks": [
-                          11.1,
-                          11.2
+                          0.3,
+                          0.6
                         ]
                       }
                     ]
@@ -89,15 +76,19 @@ class NeuralNetworkSnapshotTest extends Specification {
               "outputLayer": {
                 "outputs": [
                   {
+                    "activationFunction": "LINEAR",
                     "incomingLinks": [
-                      12.1,
-                      12.2
+                      0.1,
+                      0.1,
+                      0.3
                     ]
                   },
                   {
+                    "activationFunction": "LINEAR",
                     "incomingLinks": [
-                      13.1,
-                      13.2
+                      0.2,
+                      0.2,
+                      0.4
                     ]
                   }
                 ]
@@ -110,22 +101,24 @@ class NeuralNetworkSnapshotTest extends Specification {
 
         expect:
         assertThat(TakeSnapshot.of(network))
-                .on('$.inputLayer.inputs[0].outgoingLinks[*]').satisfies(containsInAnyOrder(1.1d, 1.2d))
-                .on('$.inputLayer.inputs[1].outgoingLinks[*]').satisfies(containsInAnyOrder(2.1d, 2.2d))
+                .on('$.inputLayer.inputs[0].outgoingLinks[*]').satisfies(containsInAnyOrder(0.1d, 0.2d, 0.3d))
+                .on('$.inputLayer.inputs[1].outgoingLinks[*]').satisfies(containsInAnyOrder(0.4d, 0.5d, 0.6d))
 
-                .on('$.neuronsLayers.layers[0].neurons[0].outgoingLinks[*]').satisfies(containsInAnyOrder(3.1d, 3.2d))
-                .on('$.neuronsLayers.layers[0].neurons[0].incomingLinks[*]').satisfies(containsInAnyOrder(4.1d, 4.2d))
-                .on('$.neuronsLayers.layers[0].neurons[1].outgoingLinks[*]').satisfies(containsInAnyOrder(5.1d))
-                .on('$.neuronsLayers.layers[0].neurons[1].incomingLinks[*]').satisfies(containsInAnyOrder(5.1d))
+                .on('$.neuronsLayers.layers[0].neurons[0].activationFunction').satisfies(equalTo("LINEAR"))
+                .on('$.neuronsLayers.layers[0].neurons[0].outgoingLinks[*]').satisfies(containsInAnyOrder(0.1d, 0.2d))
+                .on('$.neuronsLayers.layers[0].neurons[0].incomingLinks[*]').satisfies(containsInAnyOrder(0.1d, 0.4d))
 
-                .on('$.neuronsLayers.layers[1].neurons[0].outgoingLinks[*]').satisfies(containsInAnyOrder(6.1d, 6.2d))
-                .on('$.neuronsLayers.layers[1].neurons[0].incomingLinks[*]').satisfies(containsInAnyOrder(7.1d, 7.2d))
-                .on('$.neuronsLayers.layers[1].neurons[1].outgoingLinks[*]').satisfies(containsInAnyOrder(8.1d, 8.2d))
-                .on('$.neuronsLayers.layers[1].neurons[1].incomingLinks[*]').satisfies(containsInAnyOrder(9.1d, 9.2d))
-                .on('$.neuronsLayers.layers[1].neurons[2].outgoingLinks[*]').satisfies(containsInAnyOrder(10.1d, 10.2d))
-                .on('$.neuronsLayers.layers[1].neurons[2].incomingLinks[*]').satisfies(containsInAnyOrder(11.1d, 11.2d))
+                .on('$.neuronsLayers.layers[0].neurons[1].activationFunction').satisfies(equalTo("LINEAR"))
+                .on('$.neuronsLayers.layers[0].neurons[1].outgoingLinks[*]').satisfies(containsInAnyOrder(0.1d, 0.2d))
+                .on('$.neuronsLayers.layers[0].neurons[1].incomingLinks[*]').satisfies(containsInAnyOrder(0.2d, 0.5d))
 
-                .on('$.outputLayer.outputs[0].incomingLinks[*]').satisfies(containsInAnyOrder(12.1d, 12.2d))
-                .on('$.outputLayer.outputs[1].incomingLinks[*]').satisfies(containsInAnyOrder(13.1d, 13.2d))
+                .on('$.neuronsLayers.layers[0].neurons[2].activationFunction').satisfies(equalTo("LINEAR"))
+                .on('$.neuronsLayers.layers[0].neurons[2].outgoingLinks[*]').satisfies(containsInAnyOrder(0.3d, 0.4d))
+                .on('$.neuronsLayers.layers[0].neurons[2].incomingLinks[*]').satisfies(containsInAnyOrder(0.3d, 0.6d))
+
+                .on('$.outputLayer.outputs[0].activationFunction').satisfies(equalTo("LINEAR"))
+                .on('$.outputLayer.outputs[0].incomingLinks[*]').satisfies(containsInAnyOrder(0.1d, 0.1d, 0.3d))
+                .on('$.outputLayer.outputs[1].activationFunction').satisfies(equalTo("LINEAR"))
+                .on('$.outputLayer.outputs[1].incomingLinks[*]').satisfies(containsInAnyOrder(0.2d, 0.2d, 0.4d))
     }
 }
