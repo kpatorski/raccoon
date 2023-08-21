@@ -25,7 +25,7 @@ public class Network implements NeuralNetwork {
 
     private Network emit(Iterator<Signal> signals) {
         inputLayer.forEach(neuron -> neuron.emit(signals.next()));
-        neuronsLayers.forEachNeuron(Neuron::emit);
+        neuronsLayers.forEachNeuron(Neuron::transmit);
         return this;
     }
 

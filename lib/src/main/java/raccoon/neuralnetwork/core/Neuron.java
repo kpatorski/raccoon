@@ -15,12 +15,16 @@ public class Neuron implements Emitter, Receiver {
         this.activationFunction = activationFunction;
     }
 
-    void emit() {
-        Signal signal = activationFunction.onSignal(totalIncomingSignal());
+    void transmit() {
+        Signal signal = activateNeuron(receiveSignals());
         outgoingLinks.forEach(link -> link.transmit(signal));
     }
 
-    private Signal totalIncomingSignal() {
+    private Signal activateNeuron(Signal signal) {
+        return activationFunction.onSignal(signal);
+    }
+
+    private Signal receiveSignals() {
         return incomingLinks.stream()
                 .map(Link::outgoingSignal)
                 .collect(Signal.sum());

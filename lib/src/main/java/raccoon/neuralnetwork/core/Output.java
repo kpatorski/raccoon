@@ -15,13 +15,17 @@ public class Output implements Receiver {
     }
 
     Signal signal() {
-        return activationFunction.onSignal(totalIncomingSignal());
+        return activateOutput(receiveSignals());
     }
 
-    private Signal totalIncomingSignal() {
+    private Signal receiveSignals() {
         return incomingLinks.stream()
                 .map(Link::outgoingSignal)
                 .collect(Signal.sum());
+    }
+
+    private Signal activateOutput(Signal signal) {
+        return activationFunction.onSignal(signal);
     }
 
     @Override
