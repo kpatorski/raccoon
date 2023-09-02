@@ -1,5 +1,8 @@
 package raccoon.neuralnetwork;
 
+import raccoon.neuralnetwork.InputLayer.Input;
+import raccoon.neuralnetwork.NeuronLayer.Neuron;
+import raccoon.neuralnetwork.OutputLayer.Output;
 import raccoon.neuralnetwork.activationfunction.ActivationFunction;
 
 import java.util.random.RandomGenerator;

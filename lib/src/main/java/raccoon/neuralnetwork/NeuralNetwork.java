@@ -1,7 +1,6 @@
 package raccoon.neuralnetwork;
 
-import java.util.Collection;
-import java.util.Iterator;
+import java.util.List;
 
 public class NeuralNetwork {
     private final InputLayer inputLayer;
@@ -14,20 +13,17 @@ public class NeuralNetwork {
         this.outputLayer = outputLayer;
     }
 
-    public Collection<Signal> emit(Collection<Signal> signals) {
-        return emit(signals.iterator())
-                .outputs();
+    public List<Signal> emit(List<Signal> signals) {
+        return emitSignals(signals).receiveOutputs();
     }
 
-    private NeuralNetwork emit(Iterator<Signal> signals) {
-        inputLayer.forEach(neuron -> neuron.emit(signals.next()));
-        neuronsLayers.forEachNeuron(Neuron::transmit);
+    private NeuralNetwork emitSignals(List<Signal> signals) {
+        inputLayer.emit(signals);
+        neuronsLayers.transmit();
         return this;
     }
 
-    private Collection<Signal> outputs() {
-        return outputLayer.outputs().stream()
-                .map(Output::signal)
-                .toList();
+    private List<Signal> receiveOutputs() {
+        return outputLayer.signals().toList();
     }
 }

@@ -3,7 +3,6 @@ package raccoon.neuralnetwork;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.function.Consumer;
 
 class NeuronsLayers {
     private final List<NeuronLayer> layers = new ArrayList<>();
@@ -28,7 +27,7 @@ class NeuronsLayers {
         return layers.iterator();
     }
 
-    void forEachNeuron(Consumer<Neuron> consumer) {
-        layers.forEach(layer -> layer.neurons().forEach(consumer));
+    void transmit() {
+        iterator().forEachRemaining(NeuronLayer::transmit);
     }
 }
