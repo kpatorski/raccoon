@@ -1,13 +1,11 @@
-package raccoon.neuralnetwork.usecases.createnetwork;
+package raccoon.neuralnetwork;
 
-import raccoon.neuralnetwork.NeuralNetwork;
-import raccoon.neuralnetwork.core.*;
-import raccoon.neuralnetwork.core.activationfunction.ActivationFunction;
+import raccoon.neuralnetwork.activationfunction.ActivationFunction;
 
 import java.util.random.RandomGenerator;
 import java.util.stream.Stream;
 
-public class CreateNewNetwork {
+class CreateNewNetwork {
     private static final WeightsGenerator RANDOM_WEIGHTS = randomWeightsGenerator();
 
     private static WeightsGenerator randomWeightsGenerator() {
@@ -18,8 +16,7 @@ public class CreateNewNetwork {
         return new Builder(RANDOM_WEIGHTS);
     }
 
-    //TODO: delete it once snapshot is introduced
-    public static SetupFirstLayer ofFixedWeights(WeightsGenerator weights) {
+    static SetupFirstLayer ofFixedWeights(WeightsGenerator weights) {
         return new Builder(weights);
     }
 
@@ -57,7 +54,7 @@ public class CreateNewNetwork {
                     .limit(numberOfNeurons)
                     .forEach(outputLayer::add);
             connectLayers.eachNeurons(inputLayer, neuronsLayers, outputLayer);
-            return new Network(inputLayer, neuronsLayers, outputLayer);
+            return new NeuralNetwork(inputLayer, neuronsLayers, outputLayer);
         }
     }
 

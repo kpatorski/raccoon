@@ -1,11 +1,9 @@
 package raccoon.neuralnetwork
 
-import raccoon.neuralnetwork.usecases.createnetwork.CreateNewNetwork
-import raccoon.neuralnetwork.usecases.createnetwork.WeightsGenerator
 import spock.lang.Specification
 
-import static raccoon.neuralnetwork.core.Link.Weight
-import static raccoon.neuralnetwork.core.activationfunction.ActivationFunctions.linearFunction
+import static raccoon.neuralnetwork.Link.*
+import static raccoon.neuralnetwork.activationfunction.ActivationFunctions.linearFunction
 
 class ForwardPropagationTest extends Specification {
 

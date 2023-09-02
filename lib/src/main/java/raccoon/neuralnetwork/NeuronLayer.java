@@ -1,16 +1,16 @@
-package raccoon.neuralnetwork.core;
+package raccoon.neuralnetwork;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class NeuronLayer {
+class NeuronLayer {
     private final Collection<Neuron> neurons = new ArrayList<>();
 
-    public void add(Neuron neuron) {
+    void add(Neuron neuron) {
         neurons.add(neuron);
     }
 
-    public Collection<Neuron> neurons() {
+    Collection<Neuron> neurons() {
         return neurons;
     }
 }

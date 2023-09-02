@@ -1,4 +1,4 @@
-package raccoon.neuralnetwork.core.activationfunction;
+package raccoon.neuralnetwork.activationfunction;
 
 import raccoon.neuralnetwork.Signal;
 

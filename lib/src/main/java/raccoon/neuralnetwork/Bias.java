@@ -1,8 +1,6 @@
-package raccoon.neuralnetwork.core;
+package raccoon.neuralnetwork;
 
-import raccoon.neuralnetwork.Signal;
-
-public class Bias implements Emitter {
+class Bias implements Emitter {
     private static final Signal SIGNAL = new Signal(1);
     private Link linkToReceiver;
 
@@ -11,7 +9,7 @@ public class Bias implements Emitter {
         this.linkToReceiver = receiver;
     }
 
-    public void emit() {
+    void emit() {
         linkToReceiver.transmit(SIGNAL);
     }
 }

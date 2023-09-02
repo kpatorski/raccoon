@@ -1,4 +1,4 @@
-package raccoon.neuralnetwork.core.activationfunction;
+package raccoon.neuralnetwork.activationfunction;
 
 public class ActivationFunctions {
     private static final ActivationFunction LINEAR = new LinearFunction();

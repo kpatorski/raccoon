@@ -1,30 +1,30 @@
-package raccoon.neuralnetwork.core;
+package raccoon.neuralnetwork;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class NeuronsLayers {
+class NeuronsLayers {
     private final List<NeuronLayer> layers = new ArrayList<>();
 
-    public void add(NeuronLayer layer) {
+    void add(NeuronLayer layer) {
         layers.add(layer);
     }
 
-    public boolean isEmpty() {
+    boolean isEmpty() {
         return layers.isEmpty();
     }
 
-    public NeuronLayer first() {
+    NeuronLayer first() {
         return layers.get(0);
     }
 
-    public NeuronLayer last() {
+    NeuronLayer last() {
         return layers.get(layers.size() - 1);
     }
 
-    public Iterator<NeuronLayer> iterator() {
+    Iterator<NeuronLayer> iterator() {
         return layers.iterator();
     }
 

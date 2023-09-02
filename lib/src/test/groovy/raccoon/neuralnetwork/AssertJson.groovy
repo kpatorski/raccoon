@@ -1,6 +1,5 @@
 package raccoon.neuralnetwork
 
-
 import com.jayway.jsonpath.DocumentContext
 import com.jayway.jsonpath.JsonPath
 import org.assertj.core.api.Assertions

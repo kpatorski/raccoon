@@ -1,13 +1,10 @@
-package raccoon.neuralnetwork.usecases.snapshot;
+package raccoon.neuralnetwork;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import raccoon.neuralnetwork.NeuralNetwork;
-import raccoon.neuralnetwork.core.Link;
-import raccoon.neuralnetwork.core.Network;
-import raccoon.neuralnetwork.core.activationfunction.ActivationFunction;
+import raccoon.neuralnetwork.activationfunction.ActivationFunction;
 
-public class RestoreSnapshot {
+class RestoreSnapshot {
     private static final Gson GSON = new GsonBuilder()
             .registerTypeAdapter(Link.class, new LinkSerializer())
             .registerTypeAdapter(ActivationFunction.class, new ActivationFunctionSerializer())
@@ -17,6 +14,6 @@ public class RestoreSnapshot {
     }
 
     public static NeuralNetwork from(String snapshot) {
-        return GSON.fromJson(snapshot, Network.class);
+        return GSON.fromJson(snapshot, NeuralNetwork.class);
     }
 }

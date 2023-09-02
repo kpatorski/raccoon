@@ -1,7 +1,6 @@
-package raccoon.neuralnetwork.usecases.snapshot;
+package raccoon.neuralnetwork;
 
 import com.google.gson.*;
-import raccoon.neuralnetwork.core.Link;
 
 import java.lang.reflect.Type;
 

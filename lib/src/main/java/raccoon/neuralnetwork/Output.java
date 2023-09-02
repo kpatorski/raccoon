@@ -1,16 +1,15 @@
-package raccoon.neuralnetwork.core;
+package raccoon.neuralnetwork;
 
-import raccoon.neuralnetwork.Signal;
-import raccoon.neuralnetwork.core.activationfunction.ActivationFunction;
+import raccoon.neuralnetwork.activationfunction.ActivationFunction;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public class Output implements Receiver {
+class Output implements Receiver {
     private final Set<Link> incomingLinks = new HashSet<>();
     private final ActivationFunction activationFunction;
 
-    public Output(ActivationFunction activationFunction) {
+    Output(ActivationFunction activationFunction) {
         this.activationFunction = activationFunction;
     }
 

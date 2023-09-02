@@ -1,12 +1,12 @@
-package raccoon.neuralnetwork.usecases.snapshot
+package raccoon.neuralnetwork
 
 import spock.lang.Specification
 
+import static AssertJson.assertThat
 import static org.hamcrest.Matchers.containsInAnyOrder
 import static org.hamcrest.Matchers.equalTo
-import static raccoon.neuralnetwork.AssertJson.assertThat
 
-class NeuralNetworkSnapshotTest extends Specification {
+class NeuralNeuralNetworkSnapshotTest extends Specification {
     /**
      * <img src="./network-hidden-layer.png" width=483/>
      */

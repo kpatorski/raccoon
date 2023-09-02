@@ -1,9 +1,9 @@
-package raccoon.neuralnetwork.usecases.snapshot;
+package raccoon.neuralnetwork;
 
 import com.google.gson.*;
-import raccoon.neuralnetwork.core.activationfunction.ActivationFunction;
-import raccoon.neuralnetwork.core.activationfunction.ActivationFunctions;
-import raccoon.neuralnetwork.core.activationfunction.FunctionId;
+import raccoon.neuralnetwork.activationfunction.ActivationFunction;
+import raccoon.neuralnetwork.activationfunction.ActivationFunctions;
+import raccoon.neuralnetwork.activationfunction.FunctionId;
 
 import java.lang.reflect.Type;
 

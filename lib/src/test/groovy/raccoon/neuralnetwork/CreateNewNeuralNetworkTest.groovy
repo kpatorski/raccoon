@@ -1,14 +1,12 @@
-package raccoon.neuralnetwork.usecases.createnetwork
+package raccoon.neuralnetwork
 
-import raccoon.neuralnetwork.NeuralNetwork
-import raccoon.neuralnetwork.usecases.snapshot.TakeSnapshot
 import spock.lang.Specification
 
+import static AssertJson.assertThat
 import static org.hamcrest.Matchers.*
-import static raccoon.neuralnetwork.AssertJson.assertThat
-import static raccoon.neuralnetwork.core.activationfunction.ActivationFunctions.linearFunction
+import static raccoon.neuralnetwork.activationfunction.ActivationFunctions.linearFunction
 
-class CreateNewNetworkTest extends Specification {
+class CreateNewNeuralNetworkTest extends Specification {
 
     def "neural network has no hidden layer"() {
         when:
