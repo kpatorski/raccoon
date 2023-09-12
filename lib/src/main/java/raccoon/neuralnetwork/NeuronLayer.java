@@ -1,11 +1,12 @@
 package raccoon.neuralnetwork;
 
 import raccoon.neuralnetwork.activationfunction.ActivationFunction;
+import raccoon.neuralnetwork.activationfunction.FunctionId;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Stream;
+
+import static java.util.stream.Stream.concat;
 
 class NeuronLayer {
     private final List<Neuron> neurons = new ArrayList<>();
@@ -20,6 +21,10 @@ class NeuronLayer {
 
     void transmit() {
         neurons.forEach(Neuron::transmit);
+    }
+
+    Snapshot toSnapshot() {
+        return new Snapshot(neurons.stream().map(Neuron::toSnapshot).toList());
     }
 
     static class Neuron implements Emitter, Receiver {
@@ -54,6 +59,32 @@ class NeuronLayer {
         @Override
         public void linkWithEmitter(Link emitter) {
             incomingLinks.add(emitter);
+        }
+
+        Snapshot toSnapshot() {
+            return new Snapshot(activationFunction.id(), Link.toSnapshot(incomingLinks), Link.toSnapshot(outgoingLinks));
+        }
+
+        record Snapshot(FunctionId activationFunction, List<Link.Snapshot> incomingLinks, List<Link.Snapshot> outgoingLinks) {
+
+        }
+    }
+
+    record Snapshot(List<Neuron.Snapshot> neurons) {
+        Stream<Link.Snapshot> links() {
+            return concat(incomingLinks(), outgoingLinks());
+        }
+
+        private Stream<Link.Snapshot> incomingLinks() {
+            return neurons.stream()
+                    .map(Neuron.Snapshot::incomingLinks)
+                    .flatMap(Collection::stream);
+        }
+
+        private Stream<Link.Snapshot> outgoingLinks() {
+            return neurons.stream()
+                    .map(Neuron.Snapshot::outgoingLinks)
+                    .flatMap(Collection::stream);
         }
     }
 }

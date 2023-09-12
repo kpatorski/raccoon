@@ -9,10 +9,10 @@ public class NetworkFacade {
     }
 
     public static String serializeToJson(NeuralNetwork network) {
-        return SerializeAsJson.network(network);
+        return SerializeNetwork.toJson(network);
     }
 
     public static NeuralNetwork deserializeFromJson(String json) {
-        return DeserializeFromJson.network(json);
+        return SerializeNetwork.fromJson(json);
     }
 }

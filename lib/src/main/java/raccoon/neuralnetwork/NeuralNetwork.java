@@ -1,6 +1,9 @@
 package raccoon.neuralnetwork;
 
 import java.util.List;
+import java.util.stream.Stream;
+
+import static java.util.stream.Stream.concat;
 
 public class NeuralNetwork {
     private final InputLayer inputLayer;
@@ -25,5 +28,31 @@ public class NeuralNetwork {
 
     private List<Signal> receiveOutputs() {
         return outputLayer.signals().toList();
+    }
+
+    Snapshot toSnapshot() {
+        return new Snapshot(inputLayer.toSnapshot(), neuronsLayers.toSnapshot(), outputLayer.toSnapshot());
+    }
+
+    record Snapshot(InputLayer.Snapshot inputLayer,
+                    NeuronsLayers.Snapshot neuronsLayers,
+                    OutputLayer.Snapshot outputLayer) {
+
+        Stream<InputLayer.Input.Snapshot> inputs() {
+            return inputLayer.inputs().stream();
+        }
+
+        Stream<NeuronLayer.Snapshot> neuronLayers() {
+            return neuronsLayers.layers().stream();
+        }
+
+        Stream<OutputLayer.Output.Snapshot> outputs() {
+            return outputLayer.outputs().stream();
+        }
+
+        Stream<Link.Snapshot> links() {
+            return concat(concat(inputLayer.links(), neuronsLayers.links()), outputLayer.links());
+        }
+
     }
 }

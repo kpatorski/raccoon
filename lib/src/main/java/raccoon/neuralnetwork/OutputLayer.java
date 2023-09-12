@@ -1,6 +1,7 @@
 package raccoon.neuralnetwork;
 
 import raccoon.neuralnetwork.activationfunction.ActivationFunction;
+import raccoon.neuralnetwork.activationfunction.FunctionId;
 
 import java.util.*;
 import java.util.stream.Stream;
@@ -19,6 +20,10 @@ class OutputLayer {
     Stream<Signal> signals() {
         return outputs.stream()
                 .map(Output::signal);
+    }
+
+    Snapshot toSnapshot() {
+        return new Snapshot(outputs.stream().map(Output::toSnapshot).toList());
     }
 
     static class Output implements Receiver {
@@ -46,6 +51,21 @@ class OutputLayer {
         @Override
         public void linkWithEmitter(Link emitter) {
             incomingLinks.add(emitter);
+        }
+
+        Snapshot toSnapshot() {
+            return new Snapshot(activationFunction.id(), Link.toSnapshot(incomingLinks));
+        }
+
+        record Snapshot(FunctionId activationFunction, List<Link.Snapshot> incomingLinks) {
+        }
+    }
+
+    record Snapshot(List<Output.Snapshot> outputs) {
+        Stream<Link.Snapshot> links() {
+            return outputs.stream()
+                    .map(Output.Snapshot::incomingLinks)
+                    .flatMap(Collection::stream);
         }
     }
 }

@@ -12,22 +12,40 @@ class NeuralNetworkAsJsonTest extends Specification {
      */
     def "neural network is converted from and converted to JSON"() {
         given:
-        def snapshot = """
+        def json = """
             {
               "inputLayer": {
                 "inputs": [
                   {
                     "outgoingLinks": [
-                      0.1,
-                      0.2,
-                      0.3
+                      {
+                        "id": "aaa1c2bf-a7ef-4203-af65-1c05428935d9",
+                        "weight": 0.1
+                      },
+                      {
+                        "id": "aaa2c2bf-a7ef-4203-af65-1c05428935d9",
+                        "weight": 0.2
+                      },
+                      {
+                        "id": "aaa3c2bf-a7ef-4203-af65-1c05428935d9",
+                        "weight": 0.3
+                      }
                     ]
                   },
                   {
                     "outgoingLinks": [
-                      0.4,
-                      0.5,
-                      0.6
+                      {
+                        "id": "bbb1c2bf-a7ef-4203-af65-1c05428935d9",
+                        "weight": 0.4
+                      },
+                      {
+                        "id": "bbb2c2bf-a7ef-4203-af65-1c05428935d9",
+                        "weight": 0.5
+                      },
+                      {
+                        "id": "bbb3c2bf-a7ef-4203-af65-1c05428935d9",
+                        "weight": 0.6
+                      }
                     ]
                   }
                 ]
@@ -39,34 +57,70 @@ class NeuralNetworkAsJsonTest extends Specification {
                       {
                         "activationFunction": "LINEAR",
                         "outgoingLinks": [
-                          0.1,
-                          0.2
+                          {
+                            "id": "ccc1c2bf-a7ef-4203-af65-1c05428935d9",
+                            "weight": 0.1
+                          },
+                          {
+                            "id": "ccc2c2bf-a7ef-4203-af65-1c05428935d9",
+                            "weight": 0.2
+                          }
                         ],
                         "incomingLinks": [
-                          0.1,
-                          0.4
+                          {
+                            "id": "aaa1c2bf-a7ef-4203-af65-1c05428935d9",
+                            "weight": 0.1
+                          },
+                          {
+                            "id": "bbb1c2bf-a7ef-4203-af65-1c05428935d9",
+                            "weight": 0.4
+                          }
                         ]
                       },
                       {
                         "activationFunction": "LINEAR",
                         "outgoingLinks": [
-                          0.1,
-                          0.2
+                          {
+                            "id": "ddd1c2bf-a7ef-4203-af65-1c05428935d9",
+                            "weight": 0.1
+                          },
+                          {
+                            "id": "ddd2c2bf-a7ef-4203-af65-1c05428935d9",
+                            "weight": 0.2
+                          }
                         ],
                         "incomingLinks": [
-                          0.2,
-                          0.5
+                          {
+                            "id": "aaa2c2bf-a7ef-4203-af65-1c05428935d9",
+                            "weight": 0.2
+                          },
+                          {
+                            "id": "bbb2c2bf-a7ef-4203-af65-1c05428935d9",
+                            "weight": 0.5
+                          }
                         ]
                       },
                       {
                         "activationFunction": "LINEAR",
                         "outgoingLinks": [
-                          0.3,
-                          0.4
+                          {
+                            "id": "eee1c2bf-a7ef-4203-af65-1c05428935d9",
+                            "weight": 0.3
+                          },
+                          {
+                            "id": "eee2c2bf-a7ef-4203-af65-1c05428935d9",
+                            "weight": 0.4
+                          }
                         ],
                         "incomingLinks": [
-                          0.3,
-                          0.6
+                          {
+                            "id": "aaa3c2bf-a7ef-4203-af65-1c05428935d9",
+                            "weight": 0.3
+                          },
+                          {
+                            "id": "bbb3c2bf-a7ef-4203-af65-1c05428935d9",
+                            "weight": 0.6
+                          }
                         ]
                       }
                     ]
@@ -78,17 +132,35 @@ class NeuralNetworkAsJsonTest extends Specification {
                   {
                     "activationFunction": "LINEAR",
                     "incomingLinks": [
-                      0.1,
-                      0.1,
-                      0.3
+                      {
+                        "id": "ccc1c2bf-a7ef-4203-af65-1c05428935d9",
+                        "weight": 0.1
+                      },
+                      {
+                        "id": "ddd1c2bf-a7ef-4203-af65-1c05428935d9",
+                        "weight": 0.1
+                      },
+                      {
+                        "id": "eee1c2bf-a7ef-4203-af65-1c05428935d9",
+                        "weight": 0.3
+                      }
                     ]
                   },
                   {
                     "activationFunction": "LINEAR",
                     "incomingLinks": [
-                      0.2,
-                      0.2,
-                      0.4
+                      {
+                        "id": "ccc2c2bf-a7ef-4203-af65-1c05428935d9",
+                        "weight": 0.2
+                      },
+                      {
+                        "id": "ddd2c2bf-a7ef-4203-af65-1c05428935d9",
+                        "weight": 0.2
+                      },
+                      {
+                        "id": "eee2c2bf-a7ef-4203-af65-1c05428935d9",
+                        "weight": 0.4
+                      }
                     ]
                   }
                 ]
@@ -97,28 +169,28 @@ class NeuralNetworkAsJsonTest extends Specification {
         """
 
         and:
-        def network = DeserializeFromJson.network(snapshot)
+        def network = NetworkFacade.deserializeFromJson(json)
 
         expect:
-        assertThat(SerializeAsJson.network(network))
-                .on('$.inputLayer.inputs[0].outgoingLinks[*]').satisfies(containsInAnyOrder(0.1d, 0.2d, 0.3d))
-                .on('$.inputLayer.inputs[1].outgoingLinks[*]').satisfies(containsInAnyOrder(0.4d, 0.5d, 0.6d))
+        assertThat(NetworkFacade.serializeToJson(network))
+                .on('$.inputLayer.inputs[0].outgoingLinks[*].weight').satisfies(containsInAnyOrder(0.1d, 0.2d, 0.3d))
+                .on('$.inputLayer.inputs[1].outgoingLinks[*].weight').satisfies(containsInAnyOrder(0.4d, 0.5d, 0.6d))
 
                 .on('$.neuronsLayers.layers[0].neurons[0].activationFunction').satisfies(equalTo("LINEAR"))
-                .on('$.neuronsLayers.layers[0].neurons[0].outgoingLinks[*]').satisfies(containsInAnyOrder(0.1d, 0.2d))
-                .on('$.neuronsLayers.layers[0].neurons[0].incomingLinks[*]').satisfies(containsInAnyOrder(0.1d, 0.4d))
+                .on('$.neuronsLayers.layers[0].neurons[0].outgoingLinks[*].weight').satisfies(containsInAnyOrder(0.1d, 0.2d))
+                .on('$.neuronsLayers.layers[0].neurons[0].incomingLinks[*].weight').satisfies(containsInAnyOrder(0.1d, 0.4d))
 
                 .on('$.neuronsLayers.layers[0].neurons[1].activationFunction').satisfies(equalTo("LINEAR"))
-                .on('$.neuronsLayers.layers[0].neurons[1].outgoingLinks[*]').satisfies(containsInAnyOrder(0.1d, 0.2d))
-                .on('$.neuronsLayers.layers[0].neurons[1].incomingLinks[*]').satisfies(containsInAnyOrder(0.2d, 0.5d))
+                .on('$.neuronsLayers.layers[0].neurons[1].outgoingLinks[*].weight').satisfies(containsInAnyOrder(0.1d, 0.2d))
+                .on('$.neuronsLayers.layers[0].neurons[1].incomingLinks[*].weight').satisfies(containsInAnyOrder(0.2d, 0.5d))
 
                 .on('$.neuronsLayers.layers[0].neurons[2].activationFunction').satisfies(equalTo("LINEAR"))
-                .on('$.neuronsLayers.layers[0].neurons[2].outgoingLinks[*]').satisfies(containsInAnyOrder(0.3d, 0.4d))
-                .on('$.neuronsLayers.layers[0].neurons[2].incomingLinks[*]').satisfies(containsInAnyOrder(0.3d, 0.6d))
+                .on('$.neuronsLayers.layers[0].neurons[2].outgoingLinks[*].weight').satisfies(containsInAnyOrder(0.3d, 0.4d))
+                .on('$.neuronsLayers.layers[0].neurons[2].incomingLinks[*].weight').satisfies(containsInAnyOrder(0.3d, 0.6d))
 
                 .on('$.outputLayer.outputs[0].activationFunction').satisfies(equalTo("LINEAR"))
-                .on('$.outputLayer.outputs[0].incomingLinks[*]').satisfies(containsInAnyOrder(0.1d, 0.1d, 0.3d))
+                .on('$.outputLayer.outputs[0].incomingLinks[*].weight').satisfies(containsInAnyOrder(0.1d, 0.1d, 0.3d))
                 .on('$.outputLayer.outputs[1].activationFunction').satisfies(equalTo("LINEAR"))
-                .on('$.outputLayer.outputs[1].incomingLinks[*]').satisfies(containsInAnyOrder(0.2d, 0.2d, 0.4d))
+                .on('$.outputLayer.outputs[1].incomingLinks[*].weight').satisfies(containsInAnyOrder(0.2d, 0.2d, 0.4d))
     }
 }
