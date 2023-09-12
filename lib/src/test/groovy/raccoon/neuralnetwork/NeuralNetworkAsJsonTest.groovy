@@ -6,11 +6,11 @@ import static AssertJson.assertThat
 import static org.hamcrest.Matchers.containsInAnyOrder
 import static org.hamcrest.Matchers.equalTo
 
-class NeuralNeuralNetworkSnapshotTest extends Specification {
+class NeuralNetworkAsJsonTest extends Specification {
     /**
      * <img src="./network-hidden-layer.png" width=483/>
      */
-    def "neural network is restored from and stored as a snapshot"() {
+    def "neural network is converted from and converted to JSON"() {
         given:
         def snapshot = """
             {
@@ -97,10 +97,10 @@ class NeuralNeuralNetworkSnapshotTest extends Specification {
         """
 
         and:
-        def network = RestoreSnapshot.from(snapshot)
+        def network = DeserializeFromJson.network(snapshot)
 
         expect:
-        assertThat(TakeSnapshot.of(network))
+        assertThat(SerializeAsJson.network(network))
                 .on('$.inputLayer.inputs[0].outgoingLinks[*]').satisfies(containsInAnyOrder(0.1d, 0.2d, 0.3d))
                 .on('$.inputLayer.inputs[1].outgoingLinks[*]').satisfies(containsInAnyOrder(0.4d, 0.5d, 0.6d))
 

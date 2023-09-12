@@ -15,7 +15,7 @@ class CreateNewNeuralNetworkTest extends Specification {
                 .outputLayer(2, linearFunction())
 
         then:
-        assertThat(TakeSnapshot.of(network))
+        assertThat(SerializeAsJson.network(network))
                 .on('$.inputLayer.inputs[*]').satisfies(hasSize(2))
                 .on('$.inputLayer.inputs[0].outgoingLinks[*]').satisfies(hasSize(2))
                 .on('$.inputLayer.inputs[1].outgoingLinks[*]').satisfies(hasSize(2))
@@ -37,8 +37,8 @@ class CreateNewNeuralNetworkTest extends Specification {
                 .hiddenLayer(2, linearFunction())
                 .outputLayer(2, linearFunction())
 
-        and: "its snapshot"
-        def snapshot = TakeSnapshot.of(network)
+        and: "its JSON snapshot "
+        def snapshot = SerializeAsJson.network(network)
 
         expect: "network has single input layer, 2 hidden layers and single output layer"
         assertThat(snapshot)
