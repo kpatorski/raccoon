@@ -1,12 +1,14 @@
 package raccoon.neuralnetwork;
 
 import raccoon.neuralnetwork.InputLayer.Input;
-import raccoon.neuralnetwork.Link.Weight;
 import raccoon.neuralnetwork.NeuronLayer.Neuron;
 import raccoon.neuralnetwork.OutputLayer.Output;
 import raccoon.neuralnetwork.activationfunction.ActivationFunctions;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 class RestoreSnapshot {
@@ -77,7 +79,7 @@ class RestoreSnapshot {
 
         private static Links of(Stream<Link.Snapshot> snapshots) {
             Links links = new Links();
-            snapshots.forEach(link -> links.add(link.id(), Link.ofWeight(new Weight(link.weight()))));
+            snapshots.forEach(link -> links.add(link.id(), Link.fromSnapshot(link)));
             return links;
         }
 

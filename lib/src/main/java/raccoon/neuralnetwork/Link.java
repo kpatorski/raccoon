@@ -7,16 +7,18 @@ import java.util.UUID;
 import static java.util.UUID.randomUUID;
 
 class Link {
+    private final UUID id;
     private Signal incommingSignal = Signal.zero();
     private Signal outgoingSignal = incommingSignal;
     private Weight weight;
 
-    private Link(Weight weight) {
+    private Link(UUID id, Weight weight) {
+        this.id = id;
         this.weight = weight;
     }
 
     static Link ofWeight(Weight weight) {
-        return new Link(weight);
+        return new Link(randomUUID(), weight);
     }
 
     void transmit(Signal signal) {
@@ -41,12 +43,16 @@ class Link {
         return weight;
     }
 
-    Snapshot toSnapshot() {
-        return new Snapshot(weight.value);
-    }
-
     static List<Snapshot> toSnapshot(Collection<Link> links) {
         return links.stream().map(Link::toSnapshot).toList();
+    }
+
+    Snapshot toSnapshot() {
+        return new Snapshot(id, weight.value);
+    }
+
+    static Link fromSnapshot(Snapshot snapshot) {
+        return new Link(snapshot.id, new Weight(snapshot.weight));
     }
 
     record Weight(double value) {
@@ -57,8 +63,5 @@ class Link {
     }
 
     record Snapshot(UUID id, double weight) {
-        Snapshot(double weight) {
-            this(randomUUID(), weight);
-        }
     }
 }
