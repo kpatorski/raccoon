@@ -1,5 +1,8 @@
 package raccoon.neuralnetwork;
 
+import lombok.Data;
+import lombok.NonNull;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -33,10 +36,14 @@ class NeuronsLayers {
     }
 
     Snapshot toSnapshot() {
-        return new Snapshot(layers.stream().map(NeuronLayer::toSnapshot).toList());
+        return new Snapshot().layers(layers.stream().map(NeuronLayer::toSnapshot).toList());
     }
 
-    record Snapshot(List<NeuronLayer.Snapshot> layers) {
+    @Data
+    static class Snapshot {
+        @NonNull
+        private List<NeuronLayer.Snapshot> layers = new ArrayList<>();
+
         Stream<Link.Snapshot> links() {
             return layers.stream()
                     .flatMap(NeuronLayer.Snapshot::links);

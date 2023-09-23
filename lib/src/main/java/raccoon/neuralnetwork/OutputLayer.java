@@ -1,5 +1,8 @@
 package raccoon.neuralnetwork;
 
+import lombok.Data;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import raccoon.neuralnetwork.activationfunction.ActivationFunction;
 import raccoon.neuralnetwork.activationfunction.FunctionId;
 
@@ -23,7 +26,7 @@ class OutputLayer {
     }
 
     Snapshot toSnapshot() {
-        return new Snapshot(outputs.stream().map(Output::toSnapshot).toList());
+        return new Snapshot().outputs(outputs.stream().map(Output::toSnapshot).toList());
     }
 
     static class Output implements Receiver {
@@ -54,14 +57,35 @@ class OutputLayer {
         }
 
         Snapshot toSnapshot() {
-            return new Snapshot(activationFunction.id(), Link.toSnapshot(incomingLinks));
+            return new Snapshot(activationFunction.id())
+                    .incomingLinks(Link.toSnapshot(incomingLinks));
         }
 
-        record Snapshot(FunctionId activationFunction, List<Link.Snapshot> incomingLinks) {
+        @Data
+        @RequiredArgsConstructor
+        static class Snapshot {
+            @NonNull
+            private final FunctionId activationFunction;
+            @NonNull
+            private List<Link.Snapshot> incomingLinks = new ArrayList<>();
+
+            Snapshot addIncomingLink(@NonNull Link.Snapshot link) {
+                incomingLinks.add(link);
+                return this;
+            }
         }
     }
 
-    record Snapshot(List<Output.Snapshot> outputs) {
+    @Data
+    static class Snapshot {
+        @NonNull
+        private List<Output.Snapshot> outputs = new ArrayList<>();
+
+        Snapshot addOutput(@NonNull Output.Snapshot output) {
+            outputs.add(output);
+            return this;
+        }
+
         Stream<Link.Snapshot> links() {
             return outputs.stream()
                     .map(Output.Snapshot::incomingLinks)

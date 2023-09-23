@@ -1,5 +1,7 @@
 package raccoon.neuralnetwork;
 
+import lombok.Data;
+import lombok.NonNull;
 import raccoon.neuralnetwork.activationfunction.ActivationFunction;
 import raccoon.neuralnetwork.activationfunction.FunctionId;
 
@@ -24,7 +26,7 @@ class NeuronLayer {
     }
 
     Snapshot toSnapshot() {
-        return new Snapshot(neurons.stream().map(Neuron::toSnapshot).toList());
+        return new Snapshot().neurons(neurons.stream().map(Neuron::toSnapshot).toList());
     }
 
     static class Neuron implements Emitter, Receiver {
@@ -62,15 +64,27 @@ class NeuronLayer {
         }
 
         Snapshot toSnapshot() {
-            return new Snapshot(activationFunction.id(), Link.toSnapshot(incomingLinks), Link.toSnapshot(outgoingLinks));
+            return new Snapshot(activationFunction.id())
+                    .incomingLinks(Link.toSnapshot(incomingLinks))
+                    .outgoingLinks(Link.toSnapshot(outgoingLinks));
         }
 
-        record Snapshot(FunctionId activationFunction, List<Link.Snapshot> incomingLinks, List<Link.Snapshot> outgoingLinks) {
-
+        @Data
+        static class Snapshot {
+            @NonNull
+            private final FunctionId activationFunction;
+            @NonNull
+            private List<Link.Snapshot> incomingLinks = new ArrayList<>();
+            @NonNull
+            private List<Link.Snapshot> outgoingLinks = new ArrayList<>();
         }
     }
 
-    record Snapshot(List<Neuron.Snapshot> neurons) {
+    @Data
+    static class Snapshot {
+        @NonNull
+        private List<Neuron.Snapshot> neurons = new ArrayList<>();
+
         Stream<Link.Snapshot> links() {
             return concat(incomingLinks(), outgoingLinks());
         }

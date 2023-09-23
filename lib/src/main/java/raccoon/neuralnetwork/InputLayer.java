@@ -1,5 +1,8 @@
 package raccoon.neuralnetwork;
 
+import lombok.Data;
+import lombok.NonNull;
+
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -23,7 +26,7 @@ class InputLayer {
     }
 
     Snapshot toSnapshot() {
-        return new Snapshot(inputs.stream().map(Input::toSnapshot).toList());
+        return new Snapshot().inputs(this.inputs.stream().map(Input::toSnapshot).toList());
     }
 
     static class Input implements Emitter {
@@ -39,14 +42,31 @@ class InputLayer {
         }
 
         Snapshot toSnapshot() {
-            return new Snapshot(outgoingLinks.stream().map(Link::toSnapshot).toList());
+            return new Snapshot().outgoingLinks(outgoingLinks.stream().map(Link::toSnapshot).toList());
         }
 
-        record Snapshot(List<Link.Snapshot> outgoingLinks) {
+        @Data
+        static class Snapshot {
+            @NonNull
+            private List<Link.Snapshot> outgoingLinks = new ArrayList<>();
+
+            Snapshot addLink(@NonNull Link.Snapshot link) {
+                outgoingLinks.add(link);
+                return this;
+            }
         }
     }
 
-    record Snapshot(List<Input.Snapshot> inputs) {
+    @Data
+    static class Snapshot {
+        @NonNull
+        private List<Input.Snapshot> inputs = new ArrayList<>();
+
+        Snapshot addInput(@NonNull Input.Snapshot input) {
+            inputs.add(input);
+            return this;
+        }
+
         Stream<Link.Snapshot> links() {
             return inputs.stream()
                     .map(Input.Snapshot::outgoingLinks)
