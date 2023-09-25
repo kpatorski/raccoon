@@ -48,5 +48,10 @@ class NeuronsLayers {
             return layers.stream()
                     .flatMap(NeuronLayer.Snapshot::links);
         }
+
+        Snapshot addLayer(@NonNull NeuronLayer.Snapshot layer) {
+            layers.add(layer);
+            return this;
+        }
     }
 }

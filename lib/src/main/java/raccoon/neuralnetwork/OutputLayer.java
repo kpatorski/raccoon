@@ -69,7 +69,7 @@ class OutputLayer {
             @NonNull
             private List<Link.Snapshot> incomingLinks = new ArrayList<>();
 
-            Snapshot addIncomingLink(@NonNull Link.Snapshot link) {
+            Snapshot addLink(@NonNull Link.Snapshot link) {
                 incomingLinks.add(link);
                 return this;
             }

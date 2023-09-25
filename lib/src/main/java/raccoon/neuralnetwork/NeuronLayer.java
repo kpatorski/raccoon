@@ -77,6 +77,16 @@ class NeuronLayer {
             private List<Link.Snapshot> incomingLinks = new ArrayList<>();
             @NonNull
             private List<Link.Snapshot> outgoingLinks = new ArrayList<>();
+
+            Snapshot addIncomingLink(@NonNull Link.Snapshot link) {
+                incomingLinks.add(link);
+                return this;
+            }
+
+            Snapshot addOutgoingLink(@NonNull Link.Snapshot link) {
+                outgoingLinks.add(link);
+                return this;
+            }
         }
     }
 
@@ -99,6 +109,11 @@ class NeuronLayer {
             return neurons.stream()
                     .map(Neuron.Snapshot::outgoingLinks)
                     .flatMap(Collection::stream);
+        }
+
+        Snapshot addNeurons(@NonNull Collection<Neuron.Snapshot> neurons) {
+            this.neurons.addAll(neurons);
+            return this;
         }
     }
 }
