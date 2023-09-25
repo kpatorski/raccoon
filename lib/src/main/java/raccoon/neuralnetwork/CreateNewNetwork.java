@@ -19,10 +19,6 @@ class CreateNewNetwork {
         return new Builder(RANDOM_WEIGHTS);
     }
 
-    static SetupFirstLayer ofFixedWeights(WeightsGenerator weights) {
-        return new Builder(weights);
-    }
-
     public static class Builder implements SetupFirstLayer, SetupNextLayer, SetupLastLayer {
         private final InputLayer inputLayer = new InputLayer();
         private final NeuronsLayers neuronsLayers = new NeuronsLayers();
