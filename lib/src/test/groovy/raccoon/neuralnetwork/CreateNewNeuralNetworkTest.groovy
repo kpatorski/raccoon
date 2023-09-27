@@ -2,80 +2,83 @@ package raccoon.neuralnetwork
 
 import spock.lang.Specification
 
-import static AssertJson.assertThat
-import static org.hamcrest.Matchers.*
+import java.util.stream.Stream
+
 import static raccoon.neuralnetwork.activationfunction.ActivationFunctions.linearFunction
+import static raccoon.neuralnetwork.activationfunction.FunctionId.LINEAR
 
 class CreateNewNeuralNetworkTest extends Specification {
 
     def "neural network has no hidden layer"() {
-        when:
-        NeuralNetwork network = CreateNewNetwork.ofRandomWeights()
+        given:
+        def network = CreateNewNetwork.ofRandomWeights()
                 .inputLayer(2)
                 .outputLayer(2, linearFunction())
+                .toSnapshot()
 
-        then:
-        assertThat(NetworkFacade.serializeToJson(network))
-                .on('$.inputLayer.inputs[*]').satisfies(hasSize(2))
-                .on('$.inputLayer.inputs[0].outgoingLinks[*]').satisfies(hasSize(2))
-                .on('$.inputLayer.inputs[1].outgoingLinks[*]').satisfies(hasSize(2))
+        expect: "there are two inputs"
+        def inputs = network.inputs().toList()
+        inputs.size() == 2
 
-                .on('$.neuronsLayers.layers[*]').satisfies(hasSize(0))
+        and: "connected with 2 linear outputs"
+        network.outputs().collect(it -> it.activationFunction()) == [LINEAR, LINEAR]
+        areConnected(inputs[0], network.outputs())
+        areConnected(inputs[1], network.outputs())
 
-                .on('$.outputLayer.outputs[*]').satisfies(hasSize(2))
-                .on('$.outputLayer.outputs[0].activationFunction').satisfies(equalTo("LINEAR"))
-                .on('$.outputLayer.outputs[0].incomingLinks[*]').satisfies(hasSize(2))
-                .on('$.outputLayer.outputs[1].incomingLinks[*]').satisfies(hasSize(2))
-                .on('$.outputLayer.outputs[1].activationFunction').satisfies(equalTo("LINEAR"))
+        and: "there are no hidden neurons"
+        network.neuronsLayers().layers().isEmpty()
     }
 
     def "neural network has hidden layer"() {
-        given: "a network"
-        NeuralNetwork network = CreateNewNetwork.ofRandomWeights()
+        given:
+        def network = CreateNewNetwork.ofRandomWeights()
                 .inputLayer(2)
                 .hiddenLayer(1, linearFunction())
                 .hiddenLayer(2, linearFunction())
                 .outputLayer(2, linearFunction())
+                .toSnapshot()
 
-        and: "its JSON snapshot "
-        def snapshot = NetworkFacade.serializeToJson(network)
+        expect: "there are two inputs"
+        def inputs = network.inputs().toList()
+        inputs.size() == 2
 
-        expect: "network has single input layer, 2 hidden layers and single output layer"
-        assertThat(snapshot)
-                .on('$.*').satisfies(hasSize(3))
-                .on('$.inputLayer').satisfies(notNullValue())
-                .on('$.neuronsLayers').satisfies(notNullValue())
-                .on('$.outputLayer').satisfies(notNullValue())
+        and: "connected with 1 linear neuron of first hidden layer"
+        def hiddenLayers = network.neuronsLayers().layers()
+        hiddenLayers[0].neurons().collect(it -> it.activationFunction()) == [LINEAR]
+        areConnected(inputs[0], hiddenLayers[0].neurons())
+        areConnected(inputs[1], hiddenLayers[0].neurons())
 
-        and: "input layer has 2 neurons"
-        assertThat(snapshot)
-                .on('$.inputLayer.inputs[*]').satisfies(hasSize(2))
-                .on('$.inputLayer.inputs[0].outgoingLinks[*]').satisfies(hasSize(1))
-                .on('$.inputLayer.inputs[1].outgoingLinks[*]').satisfies(hasSize(1))
+        and: "first hidden layer is connected with 2 linear neurons of second layer"
+        hiddenLayers[1].neurons().collect(it -> it.activationFunction()) == [LINEAR, LINEAR]
+        areConnected(hiddenLayers[0].neurons()[0], hiddenLayers[1].neurons())
 
-        and: "first hidden layer has 1 neuron"
-        assertThat(snapshot)
-                .on('$.neuronsLayers.layers[0].neurons[*]').satisfies(hasSize(1))
-                .on('$.neuronsLayers.layers[0].neurons[0].activationFunction').satisfies(equalTo("LINEAR"))
-                .on('$.neuronsLayers.layers[0].neurons[0].outgoingLinks[*]').satisfies(hasSize(2))
-                .on('$.neuronsLayers.layers[0].neurons[0].incomingLinks[*]').satisfies(hasSize(2))
+        and: "second hidden layer is connected 2 linear outputs"
+        network.outputs().collect(it -> it.activationFunction()) == [LINEAR, LINEAR]
+        areConnected(hiddenLayers[1].neurons()[0], network.outputs())
+        areConnected(hiddenLayers[1].neurons()[1], network.outputs())
+    }
 
-        and: "second hidden layer has 2 neuron"
-        assertThat(snapshot)
-                .on('$.neuronsLayers.layers[1].neurons[*]').satisfies(hasSize(2))
-                .on('$.neuronsLayers.layers[1].neurons[0].activationFunction').satisfies(equalTo("LINEAR"))
-                .on('$.neuronsLayers.layers[1].neurons[0].outgoingLinks[*]').satisfies(hasSize(2))
-                .on('$.neuronsLayers.layers[1].neurons[0].incomingLinks[*]').satisfies(hasSize(1))
-                .on('$.neuronsLayers.layers[1].neurons[1].activationFunction').satisfies(equalTo("LINEAR"))
-                .on('$.neuronsLayers.layers[1].neurons[1].outgoingLinks[*]').satisfies(hasSize(2))
-                .on('$.neuronsLayers.layers[1].neurons[1].incomingLinks[*]').satisfies(hasSize(1))
+    private void areConnected(InputLayer.Input.Snapshot input, Stream<OutputLayer.Output.Snapshot> outputs) {
+        outputs.forEach { output ->
+            assert output.incomingLinks().stream().anyMatch { link -> input.outgoingLinks().contains(link) }
+        }
+    }
 
-        and: "output layer has 2 neurons"
-        assertThat(snapshot)
-                .on('$.outputLayer.outputs[*]').satisfies(hasSize(2))
-                .on('$.outputLayer.outputs[0].activationFunction').satisfies(equalTo("LINEAR"))
-                .on('$.outputLayer.outputs[0].incomingLinks[*]').satisfies(hasSize(2))
-                .on('$.outputLayer.outputs[1].activationFunction').satisfies(equalTo("LINEAR"))
-                .on('$.outputLayer.outputs[1].incomingLinks[*]').satisfies(hasSize(2))
+    private void areConnected(InputLayer.Input.Snapshot input, List<NeuronLayer.Neuron.Snapshot> neurons) {
+        neurons.forEach { neuron ->
+            assert neuron.incomingLinks().stream().anyMatch { link -> input.outgoingLinks().contains(link) }
+        }
+    }
+
+    private void areConnected(NeuronLayer.Neuron.Snapshot neuron, List<NeuronLayer.Neuron.Snapshot> neurons) {
+        neurons.forEach { receiver ->
+            assert receiver.incomingLinks().stream().anyMatch { link -> neuron.outgoingLinks().contains(link) }
+        }
+    }
+
+    private void areConnected(NeuronLayer.Neuron.Snapshot neuron, Stream<OutputLayer.Output.Snapshot> outputs) {
+        outputs.forEach { output ->
+            assert output.incomingLinks().stream().anyMatch { link -> neuron.outgoingLinks().contains(link) }
+        }
     }
 }

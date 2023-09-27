@@ -63,5 +63,12 @@ class Link {
     }
 
     record Snapshot(UUID id, double weight) {
+        @Override
+        public String toString() {
+            return "Link[" +
+                    "id=" + id +
+                    ", weight=" + weight +
+                    ']';
+        }
     }
 }
