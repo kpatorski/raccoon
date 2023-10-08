@@ -33,16 +33,17 @@ class Link {
         return new Link(randomUUID(), weight);
     }
 
-    void transmit(Signal signal) {
+    Link transmit(Signal signal) {
         incommingSignal = signal;
         outgoingSignal = multiply(weight, incommingSignal);
+        return this;
     }
 
     private static Signal multiply(Weight weight, Signal signal) {
         return signal.multiply(weight.value());
     }
 
-    Signal outgoingSignal() {
+    Signal potential() {
         return outgoingSignal;
     }
 

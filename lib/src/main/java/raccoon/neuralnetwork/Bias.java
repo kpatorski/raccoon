@@ -13,8 +13,9 @@ class Bias {
     }
 
     Signal emit() {
-        linkToReceiver.transmit(SIGNAL);
-        return linkToReceiver.outgoingSignal();
+        return linkToReceiver
+                .transmit(SIGNAL)
+                .potential();
     }
 
     double toSnapshot() {

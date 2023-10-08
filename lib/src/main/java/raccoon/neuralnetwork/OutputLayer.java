@@ -54,7 +54,7 @@ class OutputLayer {
 
         private Signal receiveSignals() {
             return incomingLinks.stream()
-                    .map(Link::outgoingSignal)
+                    .map(Link::potential)
                     .collect(Signal.sum())
                     .add(bias.emit());
         }
