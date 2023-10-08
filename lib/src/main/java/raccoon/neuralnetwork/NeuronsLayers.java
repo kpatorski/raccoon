@@ -2,29 +2,54 @@ package raccoon.neuralnetwork;
 
 import lombok.Data;
 import lombok.NonNull;
+import raccoon.neuralnetwork.activationfunction.ActivationFunction;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 class NeuronsLayers {
     private final List<NeuronLayer> layers = new ArrayList<>();
 
-    void add(NeuronLayer layer) {
-        layers.add(layer);
+    NeuronsLayers(List<NeuronLayer> layers) {
+        this.layers.addAll(layers);
     }
 
-    boolean isEmpty() {
-        return layers.isEmpty();
+    static NeuronsLayers empty() {
+        return new NeuronsLayers(new ArrayList<>());
     }
 
-    NeuronLayer first() {
-        return layers.get(0);
+    NeuronsLayers add(long numberOfNeurons,
+                      ActivationFunction function,
+                      WeightsGenerator weightsGenerator) {
+        var neuronLayer = NeuronLayer.of(numberOfNeurons, function, weightsGenerator);
+        last(last -> last.connect(neuronLayer.neurons(), weightsGenerator));
+        layers.add(neuronLayer);
+        return this;
     }
 
-    NeuronLayer last() {
-        return layers.get(layers.size() - 1);
+    NeuronsLayers ifEmpty(Runnable runnable) {
+        if (layers.isEmpty()) {
+            runnable.run();
+        }
+        return this;
+    }
+
+    NeuronsLayers ifNotEmpty(Runnable runnable) {
+        if (!layers.isEmpty()) {
+            runnable.run();
+        }
+        return this;
+    }
+
+    NeuronsLayers first(Consumer<NeuronLayer> consumer) {
+        return ifNotEmpty(() -> consumer.accept(layers.get(0)));
+    }
+
+    NeuronsLayers last(Consumer<NeuronLayer> consumer) {
+        return ifNotEmpty(() -> consumer.accept(layers.get(layers.size() - 1)));
     }
 
     Iterator<NeuronLayer> iterator() {

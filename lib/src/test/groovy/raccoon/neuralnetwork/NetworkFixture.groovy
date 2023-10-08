@@ -186,15 +186,15 @@ class NetworkFixture {
         }
     }
 
-    record Neuron(String id, FunctionId activationFunction) {
+    record Neuron(String id, FunctionId activationFunction, double bias) {
         NeuronLayer.Neuron.Snapshot toSnapshot() {
-            new NeuronLayer.Neuron.Snapshot(activationFunction)
+            new NeuronLayer.Neuron.Snapshot(activationFunction, bias)
         }
     }
 
-    record Output(String id, FunctionId activationFunction) {
+    record Output(String id, FunctionId activationFunction, double bias) {
         OutputLayer.Output.Snapshot toSnapshot() {
-            new OutputLayer.Output.Snapshot(activationFunction)
+            new OutputLayer.Output.Snapshot(activationFunction, bias)
         }
     }
 
@@ -205,11 +205,11 @@ class NetworkFixture {
         new Input(id)
     }
 
-    static Neuron neuron(String id, FunctionId activationFunction = LINEAR) {
-        new Neuron(id, activationFunction)
+    static Neuron neuron(String id, FunctionId activationFunction = LINEAR, double bias) {
+        new Neuron(id, activationFunction, bias)
     }
 
-    static Output output(String id, FunctionId activationFunction = LINEAR) {
-        new Output(id, activationFunction)
+    static Output output(String id, FunctionId activationFunction = LINEAR, double bias) {
+        new Output(id, activationFunction, bias)
     }
 }

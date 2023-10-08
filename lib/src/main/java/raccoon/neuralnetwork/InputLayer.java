@@ -9,8 +9,15 @@ import java.util.stream.Stream;
 class InputLayer {
     private final List<Input> inputs = new ArrayList<>();
 
-    void add(Input input) {
-        inputs.add(input);
+    InputLayer(List<Input> inputs) {
+        this.inputs.addAll(inputs);
+    }
+
+    static InputLayer of(long amountOfInputs) {
+        var inputs = Stream.generate(Input::new)
+                .limit(amountOfInputs)
+                .toList();
+        return new InputLayer(inputs);
     }
 
     void emit(List<Signal> signals) {
@@ -21,12 +28,16 @@ class InputLayer {
         inputs.forEach(input -> input.emit(signal.next()));
     }
 
-    List<Input> inputs() {
-        return inputs;
-    }
-
     Snapshot toSnapshot() {
         return new Snapshot().inputs(this.inputs.stream().map(Input::toSnapshot).toList());
+    }
+
+    <R extends Receiver> void connect(Stream<R> receivers, WeightsGenerator weightsGenerator) {
+        receivers.forEach(receiver -> connect(receiver, weightsGenerator));
+    }
+
+    private void connect(Receiver receiver, WeightsGenerator weightsGenerator) {
+        inputs.forEach(input -> Link.between(input, receiver, weightsGenerator.next()));
     }
 
     static class Input implements Emitter {

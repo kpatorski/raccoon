@@ -17,21 +17,17 @@ class RestoreSnapshot {
 
     static NeuralNetwork restore(NeuralNetwork.Snapshot snapshot) {
         Links links = Links.of(snapshot.links());
-        InputLayer inputLayer = new InputLayer();
-        snapshot.inputs()
-                .map(inputSnapshot -> restoreInput(inputSnapshot, links))
-                .forEach(inputLayer::add);
-
-        NeuronsLayers neuronsLayers = new NeuronsLayers();
-        snapshot.neuronLayers()
-                .map(neuronLayerSnapshot -> restoreNeuronLayer(neuronLayerSnapshot, links))
-                .forEach(neuronsLayers::add);
-
-        OutputLayer outputLayer = new OutputLayer();
-        snapshot.outputs()
-                .map(outputSnapshot -> restoreOutput(outputSnapshot, links))
-                .forEach(outputLayer::add);
+        InputLayer inputLayer = restoreInputLayer(snapshot, links);
+        NeuronsLayers neuronsLayers = restoreNeuronLayers(snapshot, links);
+        OutputLayer outputLayer = restoreOutputLayer(snapshot, links);
         return new NeuralNetwork(inputLayer, neuronsLayers, outputLayer);
+    }
+
+    private static InputLayer restoreInputLayer(NeuralNetwork.Snapshot snapshot, Links links) {
+        var inputs = snapshot.inputs()
+                .map(inputSnapshot -> restoreInput(inputSnapshot, links))
+                .toList();
+        return new InputLayer(inputs);
     }
 
     private static Input restoreInput(Input.Snapshot snapshot, Links links) {
@@ -41,18 +37,22 @@ class RestoreSnapshot {
         return input;
     }
 
+    private static NeuronsLayers restoreNeuronLayers(NeuralNetwork.Snapshot snapshot, Links links) {
+        var neuronLayers = snapshot.neuronLayers()
+                .map(neuronLayerSnapshot -> restoreNeuronLayer(neuronLayerSnapshot, links))
+                .toList();
+        return new NeuronsLayers(neuronLayers);
+    }
+
     private static NeuronLayer restoreNeuronLayer(NeuronLayer.Snapshot snapshot, Links links) {
-        NeuronLayer neuronLayer = new NeuronLayer();
-
-        snapshot.neurons().stream()
+        var neurons = snapshot.neurons().stream()
                 .map(neuronSnapshot -> restoreNeuron(neuronSnapshot, links))
-                .forEach(neuronLayer::add);
-
-        return neuronLayer;
+                .toList();
+        return new NeuronLayer(neurons);
     }
 
     private static Neuron restoreNeuron(Neuron.Snapshot snapshot, Links links) {
-        Neuron neuron = new Neuron(ActivationFunctions.of(snapshot.activationFunction()));
+        Neuron neuron = new Neuron(ActivationFunctions.of(snapshot.activationFunction()), restoreBias(snapshot.bias()));
 
         links.linksByIds(ids(snapshot.incomingLinks()))
                 .forEach(neuron::linkWithEmitter);
@@ -61,8 +61,19 @@ class RestoreSnapshot {
         return neuron;
     }
 
+    private static Link.Weight restoreBias(double bias) {
+        return new Link.Weight(bias);
+    }
+
+    private static OutputLayer restoreOutputLayer(NeuralNetwork.Snapshot snapshot, Links links) {
+        var outputs = snapshot.outputs()
+                .map(outputSnapshot -> restoreOutput(outputSnapshot, links))
+                .toList();
+        return new OutputLayer(outputs);
+    }
+
     private static Output restoreOutput(Output.Snapshot snapshot, Links links) {
-        Output output = new Output(ActivationFunctions.of(snapshot.activationFunction()));
+        Output output = new Output(ActivationFunctions.of(snapshot.activationFunction()), restoreBias(snapshot.bias()));
         links.linksByIds(ids(snapshot.incomingLinks()))
                 .forEach(output::linkWithEmitter);
         return output;

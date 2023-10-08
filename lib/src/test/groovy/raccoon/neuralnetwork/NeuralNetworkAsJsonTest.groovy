@@ -3,8 +3,7 @@ package raccoon.neuralnetwork
 import spock.lang.Specification
 
 import static AssertJson.assertThat
-import static org.hamcrest.Matchers.containsInAnyOrder
-import static org.hamcrest.Matchers.equalTo
+import static org.hamcrest.Matchers.*
 
 class NeuralNetworkAsJsonTest extends Specification {
     /**
@@ -55,6 +54,7 @@ class NeuralNetworkAsJsonTest extends Specification {
                   {
                     "neurons": [
                       {
+                        "bias": 0.10,
                         "activationFunction": "LINEAR",
                         "outgoingLinks": [
                           {
@@ -78,6 +78,7 @@ class NeuralNetworkAsJsonTest extends Specification {
                         ]
                       },
                       {
+                        "bias": 0.11,
                         "activationFunction": "LINEAR",
                         "outgoingLinks": [
                           {
@@ -101,6 +102,7 @@ class NeuralNetworkAsJsonTest extends Specification {
                         ]
                       },
                       {
+                        "bias": 0.12,
                         "activationFunction": "LINEAR",
                         "outgoingLinks": [
                           {
@@ -130,6 +132,7 @@ class NeuralNetworkAsJsonTest extends Specification {
               "outputLayer": {
                 "outputs": [
                   {
+                    "bias": 0.20,
                     "activationFunction": "LINEAR",
                     "incomingLinks": [
                       {
@@ -147,6 +150,7 @@ class NeuralNetworkAsJsonTest extends Specification {
                     ]
                   },
                   {
+                    "bias": 0.21,
                     "activationFunction": "LINEAR",
                     "incomingLinks": [
                       {
@@ -176,20 +180,26 @@ class NeuralNetworkAsJsonTest extends Specification {
                 .on('$.inputLayer.inputs[0].outgoingLinks[*].weight').satisfies(containsInAnyOrder(0.1d, 0.2d, 0.3d))
                 .on('$.inputLayer.inputs[1].outgoingLinks[*].weight').satisfies(containsInAnyOrder(0.4d, 0.5d, 0.6d))
 
+                .on('$.neuronsLayers.layers[0].neurons[0].bias').satisfies(equalTo(0.1d))
                 .on('$.neuronsLayers.layers[0].neurons[0].activationFunction').satisfies(equalTo("LINEAR"))
                 .on('$.neuronsLayers.layers[0].neurons[0].outgoingLinks[*].weight').satisfies(containsInAnyOrder(0.1d, 0.2d))
                 .on('$.neuronsLayers.layers[0].neurons[0].incomingLinks[*].weight').satisfies(containsInAnyOrder(0.1d, 0.4d))
 
+                .on('$.neuronsLayers.layers[0].neurons[1].bias').satisfies(equalTo(0.11d))
                 .on('$.neuronsLayers.layers[0].neurons[1].activationFunction').satisfies(equalTo("LINEAR"))
                 .on('$.neuronsLayers.layers[0].neurons[1].outgoingLinks[*].weight').satisfies(containsInAnyOrder(0.1d, 0.2d))
                 .on('$.neuronsLayers.layers[0].neurons[1].incomingLinks[*].weight').satisfies(containsInAnyOrder(0.2d, 0.5d))
 
+                .on('$.neuronsLayers.layers[0].neurons[2].bias').satisfies(equalTo(0.12d))
                 .on('$.neuronsLayers.layers[0].neurons[2].activationFunction').satisfies(equalTo("LINEAR"))
                 .on('$.neuronsLayers.layers[0].neurons[2].outgoingLinks[*].weight').satisfies(containsInAnyOrder(0.3d, 0.4d))
                 .on('$.neuronsLayers.layers[0].neurons[2].incomingLinks[*].weight').satisfies(containsInAnyOrder(0.3d, 0.6d))
 
+                .on('$.outputLayer.outputs[0].bias').satisfies(equalTo(0.2d))
                 .on('$.outputLayer.outputs[0].activationFunction').satisfies(equalTo("LINEAR"))
                 .on('$.outputLayer.outputs[0].incomingLinks[*].weight').satisfies(containsInAnyOrder(0.1d, 0.1d, 0.3d))
+
+                .on('$.outputLayer.outputs[1].bias').satisfies(equalTo(0.21d))
                 .on('$.outputLayer.outputs[1].activationFunction').satisfies(equalTo("LINEAR"))
                 .on('$.outputLayer.outputs[1].incomingLinks[*].weight').satisfies(containsInAnyOrder(0.2d, 0.2d, 0.4d))
     }

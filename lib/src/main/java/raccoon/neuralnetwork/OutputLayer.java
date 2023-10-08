@@ -12,12 +12,21 @@ import java.util.stream.Stream;
 class OutputLayer {
     private final List<Output> outputs = new ArrayList<>();
 
-    void add(Output output) {
-        outputs.add(output);
+    OutputLayer(List<Output> outputs) {
+        this.outputs.addAll(outputs);
     }
 
-    List<Output> outputs() {
-        return outputs;
+    static OutputLayer of(long numberOfOutputs,
+                          ActivationFunction function,
+                          WeightsGenerator weightsGenerator) {
+        List<Output> outputs = Stream.generate(() -> new Output(function, weightsGenerator.next()))
+                .limit(numberOfOutputs)
+                .toList();
+        return new OutputLayer(outputs);
+    }
+
+    Stream<Output> outputs() {
+        return outputs.stream();
     }
 
     Stream<Signal> signals() {
@@ -30,11 +39,13 @@ class OutputLayer {
     }
 
     static class Output implements Receiver {
-        private final Set<Link> incomingLinks = new HashSet<>();
+        private final Bias bias;
         private final ActivationFunction activationFunction;
+        private final Set<Link> incomingLinks = new HashSet<>();
 
-        Output(ActivationFunction activationFunction) {
+        Output(ActivationFunction activationFunction, Link.Weight biasWeight) {
             this.activationFunction = activationFunction;
+            bias = Bias.of(biasWeight);
         }
 
         private Signal signal() {
@@ -44,7 +55,8 @@ class OutputLayer {
         private Signal receiveSignals() {
             return incomingLinks.stream()
                     .map(Link::outgoingSignal)
-                    .collect(Signal.sum());
+                    .collect(Signal.sum())
+                    .add(bias.emit());
         }
 
         private Signal activateOutput(Signal signal) {
@@ -57,7 +69,7 @@ class OutputLayer {
         }
 
         Snapshot toSnapshot() {
-            return new Snapshot(activationFunction.id())
+            return new Snapshot(activationFunction.id(), bias.toSnapshot())
                     .incomingLinks(Link.toSnapshot(incomingLinks));
         }
 
@@ -66,6 +78,7 @@ class OutputLayer {
         static class Snapshot {
             @NonNull
             private final FunctionId activationFunction;
+            private final double bias;
             @NonNull
             private List<Link.Snapshot> incomingLinks = new ArrayList<>();
 

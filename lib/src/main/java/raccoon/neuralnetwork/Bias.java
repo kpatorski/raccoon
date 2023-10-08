@@ -1,15 +1,23 @@
 package raccoon.neuralnetwork;
 
-class Bias implements Emitter {
+class Bias {
     private static final Signal SIGNAL = new Signal(1);
-    private Link linkToReceiver;
+    private final Link linkToReceiver;
 
-    @Override
-    public void linkWithReceiver(Link receiver) {
-        this.linkToReceiver = receiver;
+    private Bias(Link linkToReceiver) {
+        this.linkToReceiver = linkToReceiver;
     }
 
-    void emit() {
+    static Bias of(Link.Weight weight) {
+        return new Bias(Link.of(weight));
+    }
+
+    Signal emit() {
         linkToReceiver.transmit(SIGNAL);
+        return linkToReceiver.outgoingSignal();
+    }
+
+    double toSnapshot() {
+        return linkToReceiver.toSnapshot().weight();
     }
 }

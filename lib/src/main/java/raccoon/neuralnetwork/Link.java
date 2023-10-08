@@ -1,23 +1,35 @@
 package raccoon.neuralnetwork;
 
+import lombok.Getter;
+import lombok.experimental.Accessors;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
 import static java.util.UUID.randomUUID;
 
+@Accessors(fluent = true)
 class Link {
     private final UUID id;
     private Signal incommingSignal = Signal.zero();
     private Signal outgoingSignal = incommingSignal;
-    private Weight weight;
+    @Getter
+    private final Weight weight;
 
     private Link(UUID id, Weight weight) {
         this.id = id;
         this.weight = weight;
     }
 
-    static Link ofWeight(Weight weight) {
+    static Link between(Emitter emitter, Receiver receiver, Weight weight) {
+        Link link = Link.of(weight);
+        emitter.linkWithReceiver(link);
+        receiver.linkWithEmitter(link);
+        return link;
+    }
+
+    static Link of(Weight weight) {
         return new Link(randomUUID(), weight);
     }
 
@@ -32,15 +44,6 @@ class Link {
 
     Signal outgoingSignal() {
         return outgoingSignal;
-    }
-
-    Link setWeight(Weight weight) {
-        this.weight = weight;
-        return this;
-    }
-
-    Weight weight() {
-        return weight;
     }
 
     static List<Snapshot> toSnapshot(Collection<Link> links) {

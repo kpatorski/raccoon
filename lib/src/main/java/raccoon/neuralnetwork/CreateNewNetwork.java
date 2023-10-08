@@ -1,64 +1,48 @@
 package raccoon.neuralnetwork;
 
-import raccoon.neuralnetwork.InputLayer.Input;
-import raccoon.neuralnetwork.NeuronLayer.Neuron;
-import raccoon.neuralnetwork.OutputLayer.Output;
 import raccoon.neuralnetwork.activationfunction.ActivationFunction;
 
-import java.util.random.RandomGenerator;
-import java.util.stream.Stream;
-
 class CreateNewNetwork {
-    private static final WeightsGenerator RANDOM_WEIGHTS = randomWeightsGenerator();
 
-    private static WeightsGenerator randomWeightsGenerator() {
-        return () -> new Link.Weight(RandomGenerator.getDefault().nextDouble(-1, 1));
-    }
-
-    public static SetupFirstLayer ofRandomWeights() {
-        return new Builder(RANDOM_WEIGHTS);
+    static SetupFirstLayer ofWeights(WeightsGenerator weightsGenerator) {
+        return new Builder(weightsGenerator);
     }
 
     public static class Builder implements SetupFirstLayer, SetupNextLayer, SetupLastLayer {
-        private final InputLayer inputLayer = new InputLayer();
-        private final NeuronsLayers neuronsLayers = new NeuronsLayers();
-        private final OutputLayer outputLayer = new OutputLayer();
-        private final ConnectLayers connectLayers;
+        private final WeightsGenerator weightsGenerator;
+        private InputLayer inputLayer;
+        private final NeuronsLayers hiddenLayers = NeuronsLayers.empty();
 
         private Builder(WeightsGenerator weightsGenerator) {
-            connectLayers = new ConnectLayers(weightsGenerator);
+            this.weightsGenerator = weightsGenerator;
         }
 
         @Override
-        public SetupNextLayer inputLayer(long numberOfNeurons) {
-            Stream.generate(Input::new)
-                    .limit(numberOfNeurons)
-                    .forEach(inputLayer::add);
+        public SetupNextLayer ofInputs(long numberOfInputs) {
+            inputLayer = InputLayer.of(numberOfInputs);
             return this;
         }
 
         @Override
         public SetupNextLayer hiddenLayer(long numberOfNeurons, ActivationFunction activationFunction) {
-            NeuronLayer layer = new NeuronLayer();
-            Stream.generate(() -> new Neuron(activationFunction))
-                    .limit(numberOfNeurons)
-                    .forEach(layer::add);
-            neuronsLayers.add(layer);
+            hiddenLayers.add(numberOfNeurons, activationFunction, weightsGenerator);
             return this;
         }
 
         @Override
-        public NeuralNetwork outputLayer(long numberOfNeurons, ActivationFunction activationFunction) {
-            Stream.generate(() -> new Output(activationFunction))
-                    .limit(numberOfNeurons)
-                    .forEach(outputLayer::add);
-            connectLayers.eachNeurons(inputLayer, neuronsLayers, outputLayer);
-            return new NeuralNetwork(inputLayer, neuronsLayers, outputLayer);
+        public NeuralNetwork outputLayer(long numberOfOutputs, ActivationFunction activationFunction) {
+            var outputLayer = OutputLayer.of(numberOfOutputs, activationFunction, weightsGenerator);
+            hiddenLayers
+                    .ifEmpty(() -> inputLayer.connect(outputLayer.outputs(), weightsGenerator))
+                    .ifNotEmpty(() -> hiddenLayers
+                            .first(first -> inputLayer.connect(first.neurons(), weightsGenerator))
+                            .last(last -> last.connect(outputLayer.outputs(), weightsGenerator)));
+            return new NeuralNetwork(inputLayer, hiddenLayers, outputLayer);
         }
     }
 
     public interface SetupFirstLayer {
-        SetupNextLayer inputLayer(long numberOfNeurons);
+        SetupNextLayer ofInputs(long numberOfInputs);
     }
 
     public interface SetupNextLayer extends SetupLastLayer {
@@ -66,6 +50,6 @@ class CreateNewNetwork {
     }
 
     public interface SetupLastLayer {
-        NeuralNetwork outputLayer(long numberOfNeurons, ActivationFunction activationFunction);
+        NeuralNetwork outputLayer(long numberOfOutputs, ActivationFunction activationFunction);
     }
 }

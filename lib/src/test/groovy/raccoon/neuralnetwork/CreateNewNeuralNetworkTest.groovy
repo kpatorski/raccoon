@@ -11,8 +11,8 @@ class CreateNewNeuralNetworkTest extends Specification {
 
     def "neural network has no hidden layer"() {
         given:
-        def network = CreateNewNetwork.ofRandomWeights()
-                .inputLayer(2)
+        def network = NetworkFacade.newNetwork()
+                .ofInputs(2)
                 .outputLayer(2, linearFunction())
                 .toSnapshot()
 
@@ -31,8 +31,8 @@ class CreateNewNeuralNetworkTest extends Specification {
 
     def "neural network has hidden layer"() {
         given:
-        def network = CreateNewNetwork.ofRandomWeights()
-                .inputLayer(2)
+        def network = NetworkFacade.newNetwork()
+                .ofInputs(2)
                 .hiddenLayer(1, linearFunction())
                 .hiddenLayer(2, linearFunction())
                 .outputLayer(2, linearFunction())

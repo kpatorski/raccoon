@@ -13,12 +13,29 @@ import static java.util.stream.Stream.concat;
 class NeuronLayer {
     private final List<Neuron> neurons = new ArrayList<>();
 
-    void add(Neuron neuron) {
-        neurons.add(neuron);
+    NeuronLayer(List<Neuron> neurons) {
+        this.neurons.addAll(neurons);
     }
 
-    List<Neuron> neurons() {
-        return neurons;
+    static NeuronLayer of(long numberOfNeurons,
+                          ActivationFunction function,
+                          WeightsGenerator weightsGenerator) {
+        var neurons = Stream.generate(() -> new Neuron(function, weightsGenerator.next()))
+                .limit(numberOfNeurons)
+                .toList();
+        return new NeuronLayer(neurons);
+    }
+
+    <R extends Receiver> void connect(Stream<R> receivers, WeightsGenerator weightsGenerator) {
+        receivers.forEach(receiver -> connect(receiver, weightsGenerator));
+    }
+
+    private <R extends Receiver> void connect(R receiver, WeightsGenerator weightsGenerator) {
+        neurons.forEach(neuron -> Link.between(neuron, receiver, weightsGenerator.next()));
+    }
+
+    Stream<Neuron> neurons() {
+        return neurons.stream();
     }
 
     void transmit() {
@@ -30,12 +47,14 @@ class NeuronLayer {
     }
 
     static class Neuron implements Emitter, Receiver {
+        private final Bias bias;
         private final Set<Link> outgoingLinks = new HashSet<>();
         private final Set<Link> incomingLinks = new HashSet<>();
         private final ActivationFunction activationFunction;
 
-        Neuron(ActivationFunction activationFunction) {
+        Neuron(ActivationFunction activationFunction, Link.Weight biasWeight) {
             this.activationFunction = activationFunction;
+            bias = Bias.of(biasWeight);
         }
 
         private void transmit() {
@@ -50,7 +69,8 @@ class NeuronLayer {
         private Signal receiveSignals() {
             return incomingLinks.stream()
                     .map(Link::outgoingSignal)
-                    .collect(Signal.sum());
+                    .collect(Signal.sum())
+                    .add(bias.emit());
         }
 
         @Override
@@ -64,7 +84,7 @@ class NeuronLayer {
         }
 
         Snapshot toSnapshot() {
-            return new Snapshot(activationFunction.id())
+            return new Snapshot(activationFunction.id(), bias.toSnapshot())
                     .incomingLinks(Link.toSnapshot(incomingLinks))
                     .outgoingLinks(Link.toSnapshot(outgoingLinks));
         }
@@ -73,6 +93,7 @@ class NeuronLayer {
         static class Snapshot {
             @NonNull
             private final FunctionId activationFunction;
+            private final double bias;
             @NonNull
             private List<Link.Snapshot> incomingLinks = new ArrayList<>();
             @NonNull
