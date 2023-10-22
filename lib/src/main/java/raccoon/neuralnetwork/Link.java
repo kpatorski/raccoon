@@ -1,7 +1,6 @@
 package raccoon.neuralnetwork;
 
 import lombok.Getter;
-import lombok.experimental.Accessors;
 
 import java.util.Collection;
 import java.util.List;
@@ -9,7 +8,6 @@ import java.util.UUID;
 
 import static java.util.UUID.randomUUID;
 
-@Accessors(fluent = true)
 class Link {
     private final UUID id;
     private Signal incommingSignal = Signal.zero();
